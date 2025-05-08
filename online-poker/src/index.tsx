@@ -4,9 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom'; // Correct import
-import { AuthProvider } from './context/FirebaseAuthContext';
-import { LoadingProvider } from './context/IsLoadingContext';
+import { BrowserRouter } from 'react-router';
 import { Toaster } from 'react-hot-toast';
 
 const root = ReactDOM.createRoot(
@@ -16,12 +14,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-    <LoadingProvider>
-      <AuthProvider>
         <App />
         <Toaster position="top-center" reverseOrder={false}/>
-      </AuthProvider>
-    </LoadingProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

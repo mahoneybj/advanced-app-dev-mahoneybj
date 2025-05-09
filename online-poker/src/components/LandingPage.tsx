@@ -1,7 +1,18 @@
 import { useAuth } from "../context/FirebaseAuthContext";
+import { useNavigate } from "react-router"; 
 
 const LandingPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleCreateGame = () => {
+    navigate("/create-game");
+  };
+
+  const handleJoinGame = () => {
+    navigate("/join-game");
+  };
+
 
   return (
     <section className="landing-page">
@@ -17,8 +28,8 @@ const LandingPage = () => {
           </p>
         </div>
         <div className="landing-actions">
-          <button className="btn btn-primary">Create Game</button>
-          <button className="btn btn-secondary">Join Game</button>
+          <button className="btn btn-primary" onClick={handleCreateGame}>Create Game</button>
+          <button className="btn btn-secondary" onClick={handleJoinGame}>Join Game</button>
         </div>
       </div>
     </section>

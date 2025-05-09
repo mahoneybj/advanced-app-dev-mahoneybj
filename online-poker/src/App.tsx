@@ -2,14 +2,13 @@ import './App.css';
 import Login from './components/Login';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useAuth } from './context/FirebaseAuthContext';
 import LandingPage from './components/LandingPage';
+import NewGame from './components/NewGame';
+import JoinGame from './components/JoinGame';
 import { Routes, Route } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
-  const { isLoadingAuth } = useAuth();
-
 
   useEffect(() => {
     const handleOnline = () => {
@@ -42,9 +41,23 @@ const App = () => {
             path="/"
             element={
               <ProtectedRoute>
-                <>
-                  <LandingPage />
-                </>
+                <LandingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-game"
+            element={
+              <ProtectedRoute>
+                <NewGame />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/join-game"
+            element={
+              <ProtectedRoute>
+                <JoinGame />
               </ProtectedRoute>
             }
           />

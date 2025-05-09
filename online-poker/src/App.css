@@ -28,6 +28,129 @@
   color: #61dafb;
 }
 
+
+/* Login css */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.login-container h1 {
+  margin-bottom: 1.5rem;
+  color: #334;
+  font-size: 28px;
+}
+
+.login-container h2 {
+  margin: 1rem 0;
+  color: #555;
+  font-size: 20px;
+}
+
+.email-login {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.login-button {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #334;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.login-button:hover {
+  background-color: #445;
+  transform: translateY(-1px);
+}
+
+.login-button:active {
+  transform: translateY(1px);
+}
+
+.login-input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.login-input:focus {
+  border-color: #334;
+  box-shadow: 0 0 0 2px rgba(51, 51, 68, 0.1);
+  outline: none;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: #334;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 14px;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.toggle-button:hover {
+  color: #445;
+}
+
+.error-message {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 8px 12px;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.logout-button {
+  position: relative;
+  padding: 8px 16px;
+  background-color: #334;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.logout-button:hover {
+  background-color: #be123c;
+  transform: translateY(-1px);
+}
+
+.logout-button:active {
+  transform: translateY(1px);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

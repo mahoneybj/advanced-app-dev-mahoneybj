@@ -1,12 +1,26 @@
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useNavigate } from "react-router"; 
+import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
 
 const LandingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { createGame, joinGame } = useFirestoreFunctions();
 
-  const handleCreateGame = () => {
-    navigate("/create-game");
+
+  const handleCreateGame = async () => {
+    if (!user) return;
+    
+    try {
+      const result = await createGame(user.uid);
+      if (result) {
+        const gameId = result.id;
+        
+        navigate(`/lobby/${gameId}`);
+      }
+    } catch (error) {
+      console.error("Error creating game:", error);
+    }
   };
 
   const handleJoinGame = () => {

@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, setDoc, getDoc, increment } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
@@ -11,9 +11,105 @@ export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
   
-  const todoAsync = useAsyncFunction<any>();
+  const gameAsync = useAsyncFunction<any>();
 
-  /* Firestore docs methods */
+  /* Firestore methods */
+  const createGame = async (ownerUID: string) => {
+    if (!user) {
+      toast.error("You must be logged in to create a game");
+      return;
+    }
+    return gameAsync.execute(
+      async () => {
+        const docRef = await addDoc(collection(db, "games"), {
+          ownerUID,
+          gameState: "waiting",
+          playerCount: 1
+        });
+        
+        const gameId = docRef.id;
+
+        await setDoc(doc(db, "games", gameId, "members", ownerUID), {
+          displayName: user.displayName || "Anonymous Player",
+          isHost: true
+        });
+        
+        console.log("Game created with ID:", gameId);
+
+        return docRef;
+      },
+      {
+        loadingMessage: 'Creating game...',
+        successMessage: 'Game created successfully!',
+        errorMessage: 'Failed to create game'
+      }
+    );
+  };
+
+  const joinGame = async (gameId: string) => {
+  if (!user) {
+    toast.error("You must be logged in to join a game");
+    return;
+  }
+  
+  return gameAsync.execute(
+    async () => {
+      const gameDoc = await getDoc(doc(db, "games", gameId));
+      if (!gameDoc.exists()) {
+        throw new Error("Game not found");
+      }
+      
+      const memberDoc = await getDoc(doc(db, "games", gameId, "members", user.uid));
+      if (memberDoc.exists()) {
+        toast.error("You're already in this game");
+        return { gameId, rejoined: true };
+      }
+      
+      await setDoc(doc(db, "games", gameId, "members", user.uid), {
+        displayName: user.displayName || "Anonymous Player"
+      });
+      
+      await updateDoc(doc(db, "games", gameId), {
+        playerCount: increment(1)
+      });
+      
+      return { gameId, joined: true };
+    },
+    {
+      loadingMessage: 'Joining game...',
+      successMessage: 'Game joined successfully!',
+      errorMessage: 'Failed to join game'
+    }
+    );
+  };
+
+  const getGameMembers = (gameId: string, onUpdate: (members: any[]) => void) => {
+  if (!user) {
+    toast.error("You must be logged in to view game members");
+    return () => {};
+  }
+  
+  const unsubscribe = onSnapshot(
+    collection(db, "games", gameId, "members"),
+    (snapshot) => {
+      const members = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      onUpdate(members);
+    },
+    (error) => {
+      toast.error(`Error fetching game members: ${error.message}`);
+      console.error("Error fetching game members:", error);
+    }
+  );
+  
+  return unsubscribe;
+};
+
+
+
+
   const getTodos = (onUpdate: (todos: { todo: string; id: string }[]) => void) => {
     if (!user) {
       toast.error("You must be logged in to access todos");
@@ -50,7 +146,7 @@ export function useFirestoreFunctions() {
       return;
     }
     
-    return todoAsync.execute(
+    return gameAsync.execute(
       async () => {
         const docRef = await addDoc(collection(db, "users", user.uid, "todos"), { todo });
         console.log("Document written with ID: ", docRef.id);
@@ -70,7 +166,7 @@ export function useFirestoreFunctions() {
       return;
     }
     
-    return todoAsync.execute(
+    return gameAsync.execute(
       async () => {
         await deleteDoc(doc(db, "users", user.uid, "todos", todoId));
         return todoId;
@@ -95,7 +191,7 @@ export function useFirestoreFunctions() {
       return;
     }
     
-    return todoAsync.execute(
+    return gameAsync.execute(
       async () => {
         await updateDoc(doc(db, "users", user.uid, "todos", todoId), { todo: todoEdit });
         return todoId;
@@ -109,11 +205,13 @@ export function useFirestoreFunctions() {
   };
 
   return {
+    createGame,
+    joinGame,
+    getGameMembers,
     addTodo,
     deleteTodo,
     updateTodo,
     getTodos,
     isLoading,
-    todoError: todoAsync.error,
   };
 }

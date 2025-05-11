@@ -3,7 +3,7 @@ import Login from './components/Login';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import LandingPage from './components/LandingPage';
-import NewGame from './components/NewGame';
+import Lobby from './components/Lobby';
 import JoinGame from './components/JoinGame';
 import { Routes, Route } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -46,10 +46,10 @@ const App = () => {
             }
           />
           <Route
-            path="/create-game"
+            path="/lobby/:gameId"
             element={
               <ProtectedRoute>
-                <NewGame />
+                <Lobby />
               </ProtectedRoute>
             }
           />

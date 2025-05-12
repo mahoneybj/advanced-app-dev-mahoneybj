@@ -1,11 +1,15 @@
-import { useAuth } from "../context/FirebaseAuthContext";
+import { useAuth } from "../../context/FirebaseAuthContext";
 import { useNavigate } from "react-router"; 
-import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
+import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
+import { useState } from "react";
+import { useLoading } from "../../context/IsLoadingContext";
 
 const LandingPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { createGame, joinGame } = useFirestoreFunctions();
+  const [gameID, setGameID] = useState("");
+  const { isLoading } = useLoading();
 
 
   const handleCreateGame = async () => {
@@ -23,9 +27,24 @@ const LandingPage = () => {
     }
   };
 
-  const handleJoinGame = () => {
-    navigate("/join-game");
-  };
+  const handleJoinGame = async () => {
+    if (!user) return;
+
+    if (!gameID) {
+      alert("Please enter a game ID");
+      return;
+    }
+
+    try {
+      const result = await joinGame(gameID);
+      if (result){
+        const gameId = result.id;
+        navigate(`/lobby/${gameId}`);
+      }
+    }catch (error) {
+      console.error("Error joining game:", error);
+    }
+  }
 
 
   return (
@@ -43,7 +62,16 @@ const LandingPage = () => {
         </div>
         <div className="landing-actions">
           <button className="btn btn-primary" onClick={handleCreateGame}>Create Game</button>
+        <div className="join-actions">
+        <input
+          type="text"
+          placeholder={"Enter Game ID"}
+          value={gameID}
+          onChange={(e) => setGameID(e.target.value)}
+          disabled={isLoading}
+        />
           <button className="btn btn-secondary" onClick={handleJoinGame}>Join Game</button>
+        </div>
         </div>
       </div>
     </section>

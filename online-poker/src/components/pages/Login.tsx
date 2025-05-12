@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../context/FirebaseAuthContext";
-import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
+import { useAuth } from "../../context/FirebaseAuthContext";
+import { useFirebaseAuth } from "../../hooks/useFirebaseAuth";
 import { useNavigate } from "react-router";
 
 const Login = () => {

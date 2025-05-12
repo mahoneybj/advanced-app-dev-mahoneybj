@@ -2,7 +2,6 @@ import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, setDoc, getD
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
-import { useState, useCallback } from 'react';
 import useAsyncFunction from "./useAsyncFunction";
 import toast from 'react-hot-toast'; 
 
@@ -62,7 +61,7 @@ export function useFirestoreFunctions() {
       const memberDoc = await getDoc(doc(db, "games", gameId, "members", user.uid));
       if (memberDoc.exists()) {
         toast.error("You're already in this game");
-        return { gameId, rejoined: true };
+        return  gameId;
       }
       
       await setDoc(doc(db, "games", gameId, "members", user.uid), {
@@ -73,7 +72,7 @@ export function useFirestoreFunctions() {
         playerCount: increment(1)
       });
       
-      return { gameId, joined: true };
+      return gameId;
     },
     {
       loadingMessage: 'Joining game...',

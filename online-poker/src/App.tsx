@@ -1,10 +1,9 @@
 import './App.css';
-import Login from './components/Login';
+import Login from './components/pages/Login';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import LandingPage from './components/LandingPage';
-import Lobby from './components/Lobby';
-import JoinGame from './components/JoinGame';
+import LandingPage from './components/pages/LandingPage';
+import Lobby from './components/pages/Lobby';
 import { Routes, Route } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -50,14 +49,6 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Lobby />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/join-game"
-            element={
-              <ProtectedRoute>
-                <JoinGame />
               </ProtectedRoute>
             }
           />

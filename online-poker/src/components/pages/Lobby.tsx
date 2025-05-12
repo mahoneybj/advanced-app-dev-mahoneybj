@@ -6,10 +6,10 @@ const Lobby = () => {
 
   return (
     <div>
-      <h1>{gameId}</h1>
-      <p>Welcome to the new game page!</p>
+      <h1>Welcome to your poker lobby!</h1>
+      <h3>Share your Game ID for friends to join: {gameId}</h3>
       <div>
-        <p>Here you can see the players in the game.</p>
+        <p>Players:</p>
         <PlayerList gameID={gameId} />
       </div>
     </div>

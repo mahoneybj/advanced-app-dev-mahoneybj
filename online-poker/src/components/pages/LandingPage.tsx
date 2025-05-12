@@ -30,16 +30,10 @@ const LandingPage = () => {
   const handleJoinGame = async () => {
     if (!user) return;
 
-    if (!gameID) {
-      alert("Please enter a game ID");
-      return;
-    }
-
     try {
       const result = await joinGame(gameID);
       if (result){
-        const gameId = result.id;
-        navigate(`/lobby/${gameId}`);
+        navigate(`/lobby/${gameID}`);
       }
     }catch (error) {
       console.error("Error joining game:", error);

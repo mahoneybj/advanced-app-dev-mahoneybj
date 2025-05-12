@@ -50,6 +50,11 @@ export function useFirestoreFunctions() {
     toast.error("You must be logged in to join a game");
     return;
   }
+
+  if (!gameId) {
+    toast.error("Please enter a game ID");
+    return;
+  }
   
   return gameAsync.execute(
     async () => {

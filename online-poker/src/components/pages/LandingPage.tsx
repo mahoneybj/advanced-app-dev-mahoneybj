@@ -16,29 +16,22 @@ const LandingPage = () => {
   const handleCreateGame = async () => {
     if (!user) return;
     
-    try {
-      const result = await createGame(user.uid);
-      if (result) {
-        const gameId = result.id;
+    const result = await createGame(user.uid);
+    if (result) {
+      const gameId = result.id;
         
-        navigate(`/lobby/${gameId}`);
-      }
-    } catch (error) {
-      console.error("Error creating game:", error);
+      navigate(`/lobby/${gameId}`);
     }
   };
 
   const handleJoinGame = async () => {
     if (!user) return;
 
-    try {
-      const result = await joinGame(gameID);
-      if (result){
-        navigate(`/lobby/${gameID}`);
-      }
-    }catch (error) {
-      console.error("Error joining game:", error);
+    const result = await joinGame(gameID);
+    if (result){
+      navigate(`/lobby/${gameID}`);
     }
+
   }
 
   useEffect(() => {

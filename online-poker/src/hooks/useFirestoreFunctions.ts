@@ -2,6 +2,7 @@ import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, setDoc, getD
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
+import { useGameDetails } from "../context/GameContext";
 import useAsyncFunction from "./useAsyncFunction";
 import toast from 'react-hot-toast'; 
 
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast';
 export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
+  const { gameID, setGameID } = useGameDetails();
   
   const gameAsync = useAsyncFunction<any>();
 
@@ -32,8 +34,7 @@ export function useFirestoreFunctions() {
           displayName: user.displayName || "Anonymous Player",
           isHost: true
         });
-        
-        console.log("Game created with ID:", gameId);
+        setGameID(gameId); // Set the game ID in the context
 
         return docRef;
       },
@@ -76,7 +77,7 @@ export function useFirestoreFunctions() {
       await updateDoc(doc(db, "games", gameId), {
         playerCount: increment(1)
       });
-      
+      setGameID(gameId) // Set the game ID in the context *** Investigate if this wil add gameID to the context even if join fails
       return gameId;
     },
     {

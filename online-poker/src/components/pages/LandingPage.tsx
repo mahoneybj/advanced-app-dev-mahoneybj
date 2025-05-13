@@ -1,14 +1,15 @@
 import { useAuth } from "../../context/FirebaseAuthContext";
 import { useNavigate } from "react-router"; 
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoading } from "../../context/IsLoadingContext";
+import { useGameDetails } from "../../context/GameContext";
 
 const LandingPage = () => {
   const { user } = useAuth();
+  const { gameID, setGameID } = useGameDetails();
   const navigate = useNavigate();
   const { createGame, joinGame } = useFirestoreFunctions();
-  const [gameID, setGameID] = useState("");
   const { isLoading } = useLoading();
 
 
@@ -39,6 +40,13 @@ const LandingPage = () => {
       console.error("Error joining game:", error);
     }
   }
+
+  useEffect(() => {
+    if(gameID) {
+      navigate(`/lobby/${gameID}`);
+    }
+  }
+  , [gameID, navigate]);
 
 
   return (

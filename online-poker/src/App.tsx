@@ -6,6 +6,7 @@ import LandingPage from './components/pages/LandingPage';
 import Lobby from './components/pages/Lobby';
 import { Routes, Route } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
+import { GameProvider } from './context/GameContext';
 
 const App = () => {
 
@@ -39,17 +40,21 @@ const App = () => {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <LandingPage />
-              </ProtectedRoute>
+              <GameProvider>
+                <ProtectedRoute>
+                  <LandingPage />
+                </ProtectedRoute>
+              </GameProvider>
             }
           />
           <Route
             path="/lobby/:gameId"
             element={
-              <ProtectedRoute>
-                <Lobby />
-              </ProtectedRoute>
+              <GameProvider>
+                <ProtectedRoute>
+                  <Lobby />
+                </ProtectedRoute>
+              </GameProvider>
             }
           />
         </Routes>

@@ -16,18 +16,15 @@ const LandingPage = () => {
 
   const handleCreateGame = async () => {
     if (!user) return;
-    
     const result = await createGame(user.uid);
     if (result) {
       const gameId = result.id;
-        
       navigate(`/lobby/${gameId}`);
     }
   };
 
   const handleJoinGame = async () => {
     if (!user) return;
-
     const result = await joinGame(gameIDInput);
     if (result){
       setGameID(gameIDInput);

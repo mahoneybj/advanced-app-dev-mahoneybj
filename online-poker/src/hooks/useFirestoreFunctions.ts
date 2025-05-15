@@ -112,11 +112,6 @@ export function useFirestoreFunctions() {
     };
 
   const getGameMembers = (gameId: string, onUpdate: (members: any[]) => void) => {
-  if (!user) {
-    toast.error("You must be logged in to view game members");
-    return () => {};
-  }
-  
   const unsubscribe = onSnapshot(
     collection(db, "games", gameId, "members"),
     (snapshot) => {
@@ -133,6 +128,22 @@ export function useFirestoreFunctions() {
   );
   
   return unsubscribe;
+};
+
+const gameStart = async () => {
+  return gameAsync.execute(
+    async () => {
+      await updateDoc(doc(db, "games", gameID), {
+        gameState: "playing"
+      });
+      return gameID;
+    },
+    {
+      loadingMessage: 'Starting game...',
+      successMessage: 'Game started successfully!',
+      errorMessage: 'Failed to start game'
+    }
+  );
 };
 
 
@@ -237,6 +248,7 @@ export function useFirestoreFunctions() {
     joinGame,
     leaveGame,
     getGameMembers,
+    gameStart,
     addTodo,
     deleteTodo,
     updateTodo,

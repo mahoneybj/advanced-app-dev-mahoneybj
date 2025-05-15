@@ -45,7 +45,7 @@ const LandingPage = () => {
     <section className="landing-page">
       <div className="landing-content">
         <h1>Poker</h1>
-        <h3>Welcome {user?.isAnonymous ? "Anonymous" : user?.displayName || "User"}</h3>
+        <h3>Welcome, {user?.displayName}</h3>
         <div className="landing-description">
           <p>
             This is a poker game application where you can play poker with your friends.

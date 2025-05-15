@@ -1,7 +1,7 @@
-import { getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
-import { useState, useCallback } from 'react';
+import { toast } from "react-hot-toast";
 import useAsyncFunction from "./useAsyncFunction";
 
 export function useFirebaseAuth() {
@@ -12,11 +12,20 @@ export function useFirebaseAuth() {
   const authAsync = useAsyncFunction<any>();
 
   /* Firebase auth methods */
-  const signInAnonymous = async () => {
+  const signInAnonymous = async (username: string) => {
+    if (!username){
+      toast.error("Username is required");
+      return;
+    }
     return authAsync.execute(
       async () => {
         const auth = getAuth();
-        return await signInAnonymously(auth);
+        const anonymousUser = await signInAnonymously(auth);
+
+        await updateProfile(anonymousUser.user, {
+          displayName: username
+        });
+        return anonymousUser;
       },
       {
         loadingMessage: 'Signing in anonymously...',

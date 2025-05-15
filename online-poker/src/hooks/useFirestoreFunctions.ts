@@ -11,6 +11,8 @@ export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
   const { gameID, setGameID } = useGameDetails();
+  const { gameState, setGameState } = useGameDetails();
+  const { cards, setCards } = useGameDetails();
   
   const gameAsync = useAsyncFunction<any>();
 
@@ -136,6 +138,7 @@ const gameStart = async () => {
       await updateDoc(doc(db, "games", gameID), {
         gameState: "playing"
       });
+      setGameState("playing");
       return gameID;
     },
     {

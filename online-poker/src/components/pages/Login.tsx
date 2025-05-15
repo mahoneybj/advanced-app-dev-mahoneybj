@@ -8,12 +8,13 @@ const Login = () => {
   const { signInAnonymous, signInWithGoogle, loginWithEmail, registerWithEmail, isLoading } = useFirebaseAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleAnonymousLogin = async () => {
-    await signInAnonymous();
+    await signInAnonymous(username);
     navigate("/");
   };
 
@@ -61,6 +62,13 @@ const Login = () => {
   return (
     <div className="login-container">
       <h1>Login</h1>
+      <input
+          type="username"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="login-input"
+        />
       <button onClick={handleAnonymousLogin} className="login-button" disabled={isLoading}>
         Login Anonymously
       </button>

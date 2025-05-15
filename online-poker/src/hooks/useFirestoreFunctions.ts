@@ -88,6 +88,29 @@ export function useFirestoreFunctions() {
     );
   };
 
+  const leaveGame = async () => {
+    if (!user) {
+      toast.error("You must be logged in to join a game");
+      return;
+    }
+    
+    return gameAsync.execute(
+      async () => {        
+        await deleteDoc(doc(db, "games", gameID, "members", user.uid));
+        
+        await updateDoc(doc(db, "games", gameID), {
+          playerCount: increment(-1)
+        });
+        setGameID(""); 
+      },
+      {
+        loadingMessage: 'Leaving game...',
+        successMessage: 'Game left successfully!',
+        errorMessage: 'Failed to leave game'
+      }
+      );
+    };
+
   const getGameMembers = (gameId: string, onUpdate: (members: any[]) => void) => {
   if (!user) {
     toast.error("You must be logged in to view game members");
@@ -212,6 +235,7 @@ export function useFirestoreFunctions() {
   return {
     createGame,
     joinGame,
+    leaveGame,
     getGameMembers,
     addTodo,
     deleteTodo,

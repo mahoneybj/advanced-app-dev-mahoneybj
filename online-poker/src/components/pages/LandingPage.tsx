@@ -11,6 +11,7 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { createGame, joinGame } = useFirestoreFunctions();
   const { isLoading } = useLoading();
+  const [gameIDInput, setGameIDInput] = useState("");
 
 
   const handleCreateGame = async () => {
@@ -27,8 +28,9 @@ const LandingPage = () => {
   const handleJoinGame = async () => {
     if (!user) return;
 
-    const result = await joinGame(gameID);
+    const result = await joinGame(gameIDInput);
     if (result){
+      setGameID(gameIDInput);
       navigate(`/lobby/${gameID}`);
     }
 
@@ -61,8 +63,8 @@ const LandingPage = () => {
         <input
           type="text"
           placeholder={"Enter Game ID"}
-          value={gameID}
-          onChange={(e) => setGameID(e.target.value)}
+          value={gameIDInput}
+          onChange={(e) => setGameIDInput(e.target.value)}
           disabled={isLoading}
         />
           <button className="btn btn-secondary" onClick={handleJoinGame}>Join Game</button>

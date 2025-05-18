@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, setDoc, getDoc, increment } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, updateDoc, doc, onSnapshot, setDoc, getDoc, increment, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
@@ -77,7 +77,8 @@ export function useFirestoreFunctions() {
       }
       
       await setDoc(doc(db, "games", gameId, "members", user.uid), {
-        displayName: user.displayName || "Anonymous Player"
+        displayName: user.displayName || "Anonymous Player",
+        deck: []
       });
       
       await updateDoc(doc(db, "games", gameId), {
@@ -139,9 +140,48 @@ export function useFirestoreFunctions() {
 const gameStart = async () => {
   return gameAsync.execute(
     async () => {
-      await updateDoc(doc(db, "games", gameID), {
-        gameState: "playing"
-      });
+      const gameDoc = await getDoc(doc(db, "games", gameID));
+      if (!gameDoc.exists()) {
+        throw new Error("Game not found");
+      }
+
+      // Getting game data for deck and index
+      const gameData = gameDoc.data();
+      const { deck, deckIndex } = gameData;
+
+      // Getting members
+      const membersSnapshot = await getDocs(collection(db, "games", gameID, "members"));
+      const members = membersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      let currentDeckIndex = deckIndex || 0;
+      const updates = [];
+
+      // Deal 5 cards to each player
+      for (const member of members) {
+        const playerCards = deck.slice(currentDeckIndex, currentDeckIndex + 5);
+        currentDeckIndex += 5;
+        
+        // Add update operation to our batch
+        updates.push(
+          updateDoc(doc(db, "games", gameID, "members", member.id), {
+            cards: playerCards
+          })
+        );
+      }
+      
+      // Update the game's deck index
+      updates.push(
+        updateDoc(doc(db, "games", gameID), {
+          deckIndex: currentDeckIndex,
+          gameState: "playing"
+        })
+      );
+
+      await Promise.all(updates);
+
       setGameState("playing");
       return gameID;
     },
@@ -152,6 +192,8 @@ const gameStart = async () => {
     }
   );
 };
+
+
 
 
 

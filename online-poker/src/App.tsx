@@ -7,6 +7,7 @@ import Lobby from './components/pages/Lobby';
 import { Routes, Route } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
 import { GameProvider } from './context/GameContext';
+import Game from './components/pages/Game';
 
 const App = () => {
 
@@ -53,6 +54,16 @@ const App = () => {
               <GameProvider>
                 <ProtectedRoute>
                   <Lobby />
+                </ProtectedRoute>
+              </GameProvider>
+            }
+          />
+          <Route
+            path="/game/:gameId"
+            element={
+              <GameProvider>
+                <ProtectedRoute>
+                  <Game />
                 </ProtectedRoute>
               </GameProvider>
             }

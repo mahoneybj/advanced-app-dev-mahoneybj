@@ -1,6 +1,8 @@
-
+import { useGameDetails } from "../../context/GameContext";
 
 const Game = () => {  
+    const { gameID, gameState, cards } = useGameDetails();
+
   return (
     <div className="game">
       <h1>Game</h1>

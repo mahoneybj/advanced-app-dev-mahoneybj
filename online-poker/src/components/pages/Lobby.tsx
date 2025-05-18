@@ -5,12 +5,19 @@ import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
 const Lobby = () => {
-  const { leaveGame } = useFirestoreFunctions();
+  const { leaveGame, gameStart } = useFirestoreFunctions();
   const { gameID } = useGameDetails();
   const navigate = useNavigate();
 
   const handleLeaveGame = async () => {
     await leaveGame();
+  };
+
+  const handleGameStart = async () => {
+    const result = await gameStart();
+    if (result) {
+      navigate(`/game/${gameID}`);
+    }
   };
 
     useEffect(() => {
@@ -30,6 +37,9 @@ const Lobby = () => {
       <div className="players-list">
         <h3>Players</h3>
         <PlayerList gameID={gameID} />
+      </div>
+      <div className="game-start">
+        <button className="Game-start-btn" onClick={handleGameStart}>Start Game</button>
       </div>
     </div>
   );

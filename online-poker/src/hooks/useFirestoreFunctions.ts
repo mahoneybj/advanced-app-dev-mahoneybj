@@ -3,6 +3,7 @@ import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
 import { useGameDetails } from "../context/GameContext";
+import { deckShuffle } from "../utils/deckShuffle";
 import useAsyncFunction from "./useAsyncFunction";
 import toast from 'react-hot-toast'; 
 
@@ -24,8 +25,11 @@ export function useFirestoreFunctions() {
     }
     return gameAsync.execute(
       async () => {
+        const deck = deckShuffle();
         const docRef = await addDoc(collection(db, "games"), {
           ownerUID,
+          deck: deck,
+          deckIndex: 0,
           gameState: "waiting",
           playerCount: 1
         });

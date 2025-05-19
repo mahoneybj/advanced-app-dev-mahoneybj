@@ -13,12 +13,12 @@ const Lobby = () => {
   };
 
   const handleGameStart = async () => {
-    if(gameId){
-    const result = await gameStart(gameId);
-    if (result) {
-      navigate(`/game/${gameId}`);
+    if (gameId) {
+      const result = await gameStart(gameId);
+      if (result) {
+        navigate(`/game/${gameId}`);
+      }
     }
-  }
   };
 
   useEffect(() => {
@@ -28,14 +28,14 @@ const Lobby = () => {
   }, [gameId, navigate]);
 
   useEffect(() => {
-    if (gameId){
-    const unsub = watchGameState(gameId, async (state) => {
-      if (state === "playing") {
-        navigate(`/game/${gameId}`);
-      }
-    });
-    return () => unsub();
-  }
+    if (gameId) {
+      const unsub = watchGameState(gameId, async (state) => {
+        if (state === "playing") {
+          navigate(`/game/${gameId}`);
+        }
+      });
+      return () => unsub();
+    }
   }, [navigate]);
 
   return (

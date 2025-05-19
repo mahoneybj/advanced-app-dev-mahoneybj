@@ -79,7 +79,7 @@ export function useFirestoreFunctions() {
         if (!gameDoc.exists()) {
           throw new Error("Game not found");
         }
-        
+
         if (gameDoc.data().gameState !== "waiting") {
           toast.error("Game is already in progress");
           return;
@@ -218,7 +218,10 @@ export function useFirestoreFunctions() {
     );
   };
 
-  const watchGameState = (gameId: string, onUpdate: (gameState: string) => void) => {
+  const watchGameState = (
+    gameId: string,
+    onUpdate: (gameState: string) => void,
+  ) => {
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
       (doc) => {
@@ -237,7 +240,10 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const getPlayerCards = (gameId: string, onUpdate: (cards: string[]) => void) => {
+  const getPlayerCards = (
+    gameId: string,
+    onUpdate: (cards: string[]) => void,
+  ) => {
     if (!user) {
       toast.error("You must be logged in to view your cards");
       return;

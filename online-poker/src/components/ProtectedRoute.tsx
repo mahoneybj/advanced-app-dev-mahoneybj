@@ -12,7 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, isLoadingAuth } = useAuth();
 
   if (isLoadingAuth) {
-    return <SplashScreen />; 
+    return <SplashScreen />;
   }
 
   if (!isAuthenticated) {

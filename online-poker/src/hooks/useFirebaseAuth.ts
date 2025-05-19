@@ -1,4 +1,12 @@
-import { getAuth, signInAnonymously, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  getAuth,
+  signInAnonymously,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
 import { toast } from "react-hot-toast";
@@ -7,13 +15,13 @@ import useAsyncFunction from "./useAsyncFunction";
 export function useFirebaseAuth() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
-  
+
   // Create async function handlers
   const authAsync = useAsyncFunction<any>();
 
   /* Firebase auth methods */
   const signInAnonymous = async (username: string) => {
-    if (!username){
+    if (!username) {
       toast.error("Username is required");
       return;
     }
@@ -23,15 +31,15 @@ export function useFirebaseAuth() {
         const anonymousUser = await signInAnonymously(auth);
 
         await updateProfile(anonymousUser.user, {
-          displayName: username
+          displayName: username,
         });
         return anonymousUser;
       },
       {
-        loadingMessage: 'Signing in anonymously...',
-        successMessage: 'Signed in anonymously!',
-        errorMessage: 'Failed to sign in anonymously'
-      }
+        loadingMessage: "Signing in anonymously...",
+        successMessage: "Signed in anonymously!",
+        errorMessage: "Failed to sign in anonymously",
+      },
     );
   };
 
@@ -43,10 +51,10 @@ export function useFirebaseAuth() {
         return await signInWithPopup(auth, provider);
       },
       {
-        loadingMessage: 'Signing in with Google...',
-        successMessage: 'Signed in successfully!',
-        errorMessage: 'Failed to sign in with Google'
-      }
+        loadingMessage: "Signing in with Google...",
+        successMessage: "Signed in successfully!",
+        errorMessage: "Failed to sign in with Google",
+      },
     );
   };
 
@@ -57,10 +65,10 @@ export function useFirebaseAuth() {
         return await createUserWithEmailAndPassword(auth, email, password);
       },
       {
-        loadingMessage: 'Creating your account...',
-        successMessage: 'Account created successfully!',
-        errorMessage: 'Failed to create account'
-      }
+        loadingMessage: "Creating your account...",
+        successMessage: "Account created successfully!",
+        errorMessage: "Failed to create account",
+      },
     );
   };
 
@@ -71,14 +79,12 @@ export function useFirebaseAuth() {
         return await signInWithEmailAndPassword(auth, email, password);
       },
       {
-        loadingMessage: 'Logging in...',
-        successMessage: 'Logged in successfully!',
-        errorMessage: 'Failed to log in'
-      }
+        loadingMessage: "Logging in...",
+        successMessage: "Logged in successfully!",
+        errorMessage: "Failed to log in",
+      },
     );
   };
-
-  
 
   return {
     signInAnonymous,

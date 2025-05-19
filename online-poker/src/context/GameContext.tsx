@@ -15,10 +15,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameID, setGameID] = useState<string>("");
   const [gameState, setGameState] = useState<string>("waiting");
   const [cards, setCards] = useState<string[]>([]);
-  
 
   return (
-    <GameContext.Provider value={{ gameID, gameState, cards, setGameID, setGameState, setCards }}>
+    <GameContext.Provider
+      value={{ gameID, gameState, cards, setGameID, setGameState, setCards }}
+    >
       {children}
     </GameContext.Provider>
   );

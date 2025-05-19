@@ -28,7 +28,6 @@
   color: #61dafb;
 }
 
-
 /* Login css */
 .login-container {
   display: flex;
@@ -75,7 +74,9 @@
   color: white;
   border: none;
   border-radius: 4px;
-  transition: background-color 0.2s, transform 0.1s;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
 }
 
 .login-button:hover {
@@ -94,7 +95,9 @@
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .login-input:focus {
@@ -139,7 +142,9 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s, transform 0.1s;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
 }
 
 .logout-button:hover {
@@ -176,9 +181,15 @@
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* LandingPage styling */
@@ -334,7 +345,9 @@
   border-radius: 6px;
   padding: 1rem;
   border-left: 4px solid #334;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .player:hover {

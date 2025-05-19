@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { User, getAuth, signOut, connectAuthEmulator } from "firebase/auth";
 import "../firebase";
 
@@ -11,8 +17,8 @@ if (process.env.NODE_ENV === "development") {
 interface AuthContextProps {
   user: User | null;
   isAuthenticated: boolean;
-  logout: () => Promise<void>; 
-  isLoadingAuth: boolean; 
+  logout: () => Promise<void>;
+  isLoadingAuth: boolean;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -42,7 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, logout, isLoadingAuth }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated: !!user, logout, isLoadingAuth }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -55,5 +63,3 @@ export const useAuth = () => {
   }
   return context;
 };
-
-

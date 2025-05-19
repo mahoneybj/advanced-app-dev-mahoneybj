@@ -5,7 +5,13 @@ import { useNavigate } from "react-router";
 
 const Login = () => {
   const { user } = useAuth();
-  const { signInAnonymous, signInWithGoogle, loginWithEmail, registerWithEmail, isLoading } = useFirebaseAuth();
+  const {
+    signInAnonymous,
+    signInWithGoogle,
+    loginWithEmail,
+    registerWithEmail,
+    isLoading,
+  } = useFirebaseAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -37,13 +43,13 @@ const Login = () => {
       navigate("/");
     } catch (error: any) {
       console.error("Email login/register failed:", error);
-      
+
       // Surely can handle this better?
-      if (error.code === 'auth/weak-password') {
+      if (error.code === "auth/weak-password") {
         setError("Password must be at least 6 characters");
-      } else if (error.code === 'auth/email-already-in-use') {
+      } else if (error.code === "auth/email-already-in-use") {
         setError("This email is already registered");
-      } else if (error.code === 'auth/invalid-email') {
+      } else if (error.code === "auth/invalid-email") {
         setError("Please enter a valid email address");
       } else {
         // Fallback to the Firebase-formatted message
@@ -55,7 +61,7 @@ const Login = () => {
   useEffect(() => {
     if (user) {
       setError(null);
-      navigate("/"); 
+      navigate("/");
     }
   }, [user, navigate]);
 
@@ -63,16 +69,24 @@ const Login = () => {
     <div className="login-container">
       <h1>Login</h1>
       <input
-          type="username"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="login-input"
-        />
-      <button onClick={handleAnonymousLogin} className="login-button" disabled={isLoading}>
+        type="username"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        className="login-input"
+      />
+      <button
+        onClick={handleAnonymousLogin}
+        className="login-button"
+        disabled={isLoading}
+      >
         Login Anonymously
       </button>
-      <button onClick={handleGoogleLogin} className="login-button" disabled={isLoading}>
+      <button
+        onClick={handleGoogleLogin}
+        className="login-button"
+        disabled={isLoading}
+      >
         Login with Google
       </button>
       <div className="email-login">
@@ -91,7 +105,11 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="login-input"
         />
-        <button onClick={handleEmailLoginOrRegister} className="login-button" disabled={isLoading}>
+        <button
+          onClick={handleEmailLoginOrRegister}
+          className="login-button"
+          disabled={isLoading}
+        >
           {isRegister ? "Register" : "Login"}
         </button>
         <button

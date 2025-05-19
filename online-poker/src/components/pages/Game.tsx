@@ -1,19 +1,23 @@
-import { useGameDetails } from "../../context/GameContext";
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
+import { useParams } from "react-router"
 import { useEffect } from "react";
 import CardsList from "../CardsList";
 
 const Game = () => {
-  const { gameID, gameState } = useGameDetails();
   const { getPlayerCards } = useFirestoreFunctions();
+  const { gameId } = useParams<{ gameId: string }>();
 
   useEffect(() => {
-    const loadPlayerCards = async () => {
-      await getPlayerCards();
-    };
-
-    loadPlayerCards();
-  }, [getPlayerCards]);
+    if (gameId) {
+      const unsubscribe = getPlayerCards(gameId, (updatedCards) => {
+        console.log("Cards updated:", updatedCards);
+      });
+      
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
+    }
+  }, []); 
 
   return (
     <div className="game">

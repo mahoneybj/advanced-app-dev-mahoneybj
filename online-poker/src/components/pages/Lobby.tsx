@@ -1,12 +1,11 @@
 import PlayerList from "../PlayersList";
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
-import { useGameDetails } from "../../context/GameContext";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 
 const Lobby = () => {
   const { leaveGame, gameStart, watchGameState } = useFirestoreFunctions();
-  const { gameID } = useGameDetails();
+  const { gameId } = useParams();
   const navigate = useNavigate();
 
   const handleLeaveGame = async () => {
@@ -14,25 +13,29 @@ const Lobby = () => {
   };
 
   const handleGameStart = async () => {
-    const result = await gameStart();
+    if(gameId){
+    const result = await gameStart(gameId);
     if (result) {
-      navigate(`/game/${gameID}`);
+      navigate(`/game/${gameId}`);
     }
+  }
   };
 
   useEffect(() => {
-    if (!gameID) {
+    if (!gameId) {
       navigate(`/`);
     }
-  }, [gameID, navigate]);
+  }, [gameId, navigate]);
 
   useEffect(() => {
-    const unsub = watchGameState(async (state) => {
+    if (gameId){
+    const unsub = watchGameState(gameId, async (state) => {
       if (state === "playing") {
-        navigate(`/game/${gameID}`);
+        navigate(`/game/${gameId}`);
       }
     });
     return () => unsub();
+  }
   }, [navigate]);
 
   return (
@@ -44,12 +47,12 @@ const Lobby = () => {
         <h1>Welcome to your poker lobby!</h1>
         <h3>
           Share your Game ID for friends to join:{" "}
-          <span className="game-id">{gameID}</span>
+          <span className="game-id">{gameId}</span>
         </h3>
       </div>
       <div className="players-list">
         <h3>Players</h3>
-        <PlayerList gameID={gameID} />
+        <PlayerList gameID={gameId} />
       </div>
       <div className="game-start">
         <button className="Game-start-btn" onClick={handleGameStart}>

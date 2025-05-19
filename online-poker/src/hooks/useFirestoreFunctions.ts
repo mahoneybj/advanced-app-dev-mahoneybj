@@ -79,6 +79,11 @@ export function useFirestoreFunctions() {
         if (!gameDoc.exists()) {
           throw new Error("Game not found");
         }
+        
+        if (gameDoc.data().gameState !== "waiting") {
+          toast.error("Game is already in progress");
+          return;
+        }
 
         const memberDoc = await getDoc(
           doc(db, "games", gameId, "members", user.uid),

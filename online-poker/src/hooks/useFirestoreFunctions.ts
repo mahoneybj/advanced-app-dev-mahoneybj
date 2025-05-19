@@ -78,7 +78,6 @@ export function useFirestoreFunctions() {
       
       await setDoc(doc(db, "games", gameId, "members", user.uid), {
         displayName: user.displayName || "Anonymous Player",
-        deck: []
       });
       
       await updateDoc(doc(db, "games", gameId), {
@@ -170,6 +169,7 @@ const gameStart = async () => {
             cards: playerCards
           })
         );
+        setCards(playerCards);
       }
       
       // Update the game's deck index
@@ -193,104 +193,48 @@ const gameStart = async () => {
   );
 };
 
-
-
-
-
-
-  const getTodos = (onUpdate: (todos: { todo: string; id: string }[]) => void) => {
-    if (!user) {
-      toast.error("You must be logged in to access todos");
-      return () => {};
-    }
-    
-    const unsubscribe = onSnapshot(
-      collection(db, "users", user.uid, "todos"), 
-      (snapshot) => {
-        const firebaseData = snapshot.docs.map((doc) => ({
-          todo: doc.data().todo,
-          id: doc.id,
-        }));
-        onUpdate(firebaseData);
-      },
-      (error) => {
-        toast.error(`Error fetching todos: ${error.message}`);
-        console.error("Error fetching todos:", error);
+const watchGameState = (onUpdate: (gameState: string) => void) => {
+  const unsubscribe = onSnapshot(
+    doc(db, "games", gameID),
+    (doc) => {
+      const data = doc.data();
+      if (data) {
+        const { gameState } = data;
+        onUpdate(gameState);
+        setGameState(gameState);
       }
-    );
-    return unsubscribe;
-  };
-
-  const addTodo = async (todo: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    
-    if (!user) {
-      toast.error("You must be logged in to add todos");
-      return;
+    },
+    (error) => {
+      toast.error(`Error fetching game state: ${error.message}`);
+      console.error("Error fetching game state:", error); 
     }
+  );
+  return unsubscribe;
+};
 
-    if (!todo) {
-      toast.error("Todo can't be blank");
-      return;
-    }
-    
-    return gameAsync.execute(
-      async () => {
-        const docRef = await addDoc(collection(db, "users", user.uid, "todos"), { todo });
-        console.log("Document written with ID: ", docRef.id);
-        return docRef;
-      },
-      {
-        loadingMessage: 'Adding todo...',
-        successMessage: 'Todo added successfully!',
-        errorMessage: 'Failed to add todo'
+const getPlayerCards = async () => {
+  if (!user || !gameID) {
+    return [];
+  }
+  
+  try {
+    const memberDoc = await getDoc(doc(db, "games", gameID, "members", user.uid));
+    if (memberDoc.exists()) {
+      const memberData = memberDoc.data();
+      if (memberData.cards) {
+        setCards(memberData.cards);
+        return memberData.cards;
       }
-    );
-  };
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching player cards:", error);
+    toast.error("Failed to fetch your cards");
+    return [];
+  }
+};
 
-  const deleteTodo = async (todoId: string) => {
-    if (!user) {
-      toast.error("You must be logged in to delete todos");
-      return;
-    }
-    
-    return gameAsync.execute(
-      async () => {
-        await deleteDoc(doc(db, "users", user.uid, "todos", todoId));
-        return todoId;
-      },
-      {
-        loadingMessage: 'Deleting todo...',
-        successMessage: 'Todo deleted successfully!',
-        errorMessage: 'Failed to delete todo'
-      }
-    );
-  };
 
-  const updateTodo = async (todoId: string, todoEdit: string, e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (e) e.preventDefault();
-    
-    if (!user) {
-      toast.error("You must be logged in to update todos");
-      return;
-    }
-    if (!todoEdit) {
-      toast.error("Todo can't be blank");
-      return;
-    }
-    
-    return gameAsync.execute(
-      async () => {
-        await updateDoc(doc(db, "users", user.uid, "todos", todoId), { todo: todoEdit });
-        return todoId;
-      },
-      {
-        loadingMessage: 'Updating todo...',
-        successMessage: 'Todo updated successfully!',
-        errorMessage: 'Failed to update todo'
-      }
-    );
-  };
 
   return {
     createGame,
@@ -298,10 +242,8 @@ const gameStart = async () => {
     leaveGame,
     getGameMembers,
     gameStart,
-    addTodo,
-    deleteTodo,
-    updateTodo,
-    getTodos,
+    watchGameState,
+    getPlayerCards,
     isLoading,
   };
 }

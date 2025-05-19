@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 
 const Lobby = () => {
-  const { leaveGame, gameStart } = useFirestoreFunctions();
+  const { leaveGame, gameStart, watchGameState } = useFirestoreFunctions();
   const { gameID } = useGameDetails();
   const navigate = useNavigate();
 
@@ -26,6 +26,16 @@ const Lobby = () => {
       }
     }
     , [gameID, navigate]);
+
+    useEffect(() => {
+      const unsub = watchGameState(async (state) => {
+        if (state === "playing") {
+          navigate(`/game/${gameID}`);
+        }
+      });
+      return () => unsub();
+    }, [navigate]);
+
   
   return (
     <div className="lobby-container">

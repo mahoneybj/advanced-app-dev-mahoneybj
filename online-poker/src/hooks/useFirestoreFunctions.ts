@@ -40,7 +40,9 @@ export function useFirestoreFunctions() {
           ownerUID,
           deck: deck,
           deckIndex: 0,
-          gameState: "waiting",
+          gameState: "Waiting",
+          currentTurn: "",  
+          turnOrder: [], 
           playerCount: 1,
         });
 
@@ -80,7 +82,7 @@ export function useFirestoreFunctions() {
           throw new Error("Game not found");
         }
 
-        if (gameDoc.data().gameState !== "waiting") {
+        if (gameDoc.data().gameState !== "Waiting") {
           toast.error("Game is already in progress");
           return;
         }
@@ -201,13 +203,13 @@ export function useFirestoreFunctions() {
         updates.push(
           updateDoc(doc(db, "games", gameId), {
             deckIndex: currentDeckIndex,
-            gameState: "playing",
+            gameState: "Playing",
           }),
         );
 
         await Promise.all(updates);
 
-        setGameState("playing");
+        setGameState("Playing");
         return gameId;
       },
       {
@@ -266,6 +268,24 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
+  const getGameState = (gameId: string, onUpdate: (gameState: string) => void, ) =>{
+    const unsubscribe = onSnapshot(
+      doc(db, "games", gameId),
+      (doc) => {
+        const data = doc.data();
+        if (data) {
+          const { gameState } = data;
+          onUpdate(gameState);
+          setGameState(gameState);
+        }
+      },
+      (error) => {
+        toast.error(`Error fetching game state: ${error.message}`);
+      },
+    );
+    return unsubscribe;
+  };
+
   return {
     createGame,
     joinGame,
@@ -274,6 +294,7 @@ export function useFirestoreFunctions() {
     gameStart,
     watchGameState,
     getPlayerCards,
+    getGameState,
     isLoading,
   };
 }

@@ -369,3 +369,33 @@
   color: #6b7280;
   font-size: 0.85rem;
 }
+
+/* Card styling */
+.Cards-Container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.cards-list {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+}
+
+.card-container {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.card-container:hover {
+  transform: translateY(-10px);
+}
+
+.card-image {
+  width: 150px; 
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

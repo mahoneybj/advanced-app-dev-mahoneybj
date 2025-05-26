@@ -168,7 +168,7 @@ export function useFirestoreFunctions() {
 
         // Getting game data for deck and index
         const gameData = gameDoc.data();
-        const { deck, deckIndex, turnIndex } = gameData;
+        const { deck, deckIndex } = gameData;
 
         // Getting members
         const membersSnapshot = await getDocs(
@@ -213,7 +213,6 @@ export function useFirestoreFunctions() {
           updateDoc(doc(db, "games", gameId), {
             currentTurn: firstPlayer,
             turnOrder: memberIds,
-            turnIndex: increment(1),
           }),
         );
 
@@ -356,11 +355,25 @@ export function useFirestoreFunctions() {
         
         const newDeckIndex = deckIndex + newCardsNeeded;
         
-        const nextTurnIndex = (turnIndex + 1) % playerCount;
-        const nextPlayerId = turnOrder[nextTurnIndex];
+        const nextTurnIndex = turnIndex + 1;
+        let nextPlayerId;
+        let nextPlayerName;
+        let gameState;
         
-        const nextPlayerDoc = await getDoc(doc(db, "games", gameId, "members", nextPlayerId));
-        const nextPlayerName = nextPlayerDoc.data()?.displayName || "Next player";
+        if (nextTurnIndex >= playerCount) {
+          nextPlayerId = "";
+          nextPlayerName = "";
+          gameState = "Calculating results"; // ADD CALL TO NEW FUNCTION
+          setGameState(`Calculating results`);
+
+        } else {
+          nextPlayerId = turnOrder[nextTurnIndex];
+          const nextPlayerDoc = await getDoc(doc(db, "games", gameId, "members", nextPlayerId));
+          nextPlayerName = nextPlayerDoc.data()?.displayName || "Next player";
+          gameState = `${nextPlayerName}'s turn`;
+          setGameState(`${nextPlayerName}'s turn`);
+
+        }
         
         const updates = [
           updateDoc(doc(db, "games", gameId, "members", user.uid), {
@@ -371,7 +384,7 @@ export function useFirestoreFunctions() {
             deckIndex: newDeckIndex,
             currentTurn: nextPlayerId,
             turnIndex: nextTurnIndex,
-            gameState: `${nextPlayerName}'s turn`,
+            gameState: gameState,
           })
         ];
         
@@ -379,7 +392,6 @@ export function useFirestoreFunctions() {
         
         setCards(updatedCards);
         setTurn(false); 
-        setGameState(`${nextPlayerName}'s turn`);
         
         return gameId;
       },

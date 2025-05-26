@@ -28,8 +28,18 @@ const CardsList = () => {
           turn={turn}
         />
       ))}
-    </div>
-  );
+      {turn && (
+        <div className="game-btn">
+          <button className="exchange-btn" onClick={console.log}>
+            Exchange Cards
+          </button>
+          <button className="submit-btn" onClick={console.log}>
+            Submit
+          </button>         
+        </div>
+  )}
+  </div>
+  )
 };
 
 export default CardsList;

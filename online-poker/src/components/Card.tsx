@@ -7,6 +7,7 @@ interface CardProps {
 
 const Card = ({ card, isSelected, onSelect, turn }: CardProps) => {
   const handleToggleSelection = () => {
+    if(!turn) return; 
     onSelect(card, !isSelected);
   };
 

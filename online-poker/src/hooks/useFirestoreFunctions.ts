@@ -17,13 +17,12 @@ import { useGameDetails } from "../context/GameContext";
 import { deckShuffle } from "../utils/deckShuffle";
 import useAsyncFunction from "./useAsyncFunction";
 import toast from "react-hot-toast";
+import { get } from "http";
 
 export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
-  const { gameID, setGameID } = useGameDetails();
-  const { setGameState } = useGameDetails();
-  const { setCards } = useGameDetails();
+  const { gameID, setGameID, setGameState, setCards, setTurn } = useGameDetails();
 
   const gameAsync = useAsyncFunction<any>();
 
@@ -176,6 +175,7 @@ export function useFirestoreFunctions() {
         );
         const members = membersSnapshot.docs.map((doc) => ({
           id: doc.id,
+          displayName: doc.data().displayName,
           ...doc.data(),
         }));
 
@@ -205,6 +205,8 @@ export function useFirestoreFunctions() {
         const memberIds = members.map(member => member.id);
         const firstPlayer = memberIds[0];
         
+        const playerName = members.map(member => member.displayName); // THIS COULD BE IMPROVED
+        const firstPlayerName = playerName[0]; 
         
 
         updates.push(
@@ -218,13 +220,13 @@ export function useFirestoreFunctions() {
         updates.push(
           updateDoc(doc(db, "games", gameId), {
             deckIndex: currentDeckIndex,
-            gameState: `${firstPlayer}'s turn`, // NEED TO ADD USERNAME
+            gameState: `${firstPlayerName}'s turn`, // NEED TO ADD USERNAME
           }),
         );
 
         await Promise.all(updates);
 
-        setGameState(`${firstPlayer}'s turn`); 
+        setGameState(`${firstPlayerName}'s turn`); 
         return gameId;
       },
       {
@@ -301,6 +303,24 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
+  const getGameTurn = (gameId: string, onUpdate: (turn: string) => void, ) =>{
+    const unsubscribe = onSnapshot(
+      doc(db, "games", gameId),
+      (doc) => {
+        const data = doc.data();
+        if (data) {
+          const { currentTurn } = data;
+          onUpdate(currentTurn);
+          setTurn(currentTurn);
+        }
+      },
+      (error) => {
+        toast.error(`Error fetching game turn: ${error.message}`);
+      },
+    );
+    return unsubscribe;
+  };
+
   return {
     createGame,
     joinGame,
@@ -310,6 +330,7 @@ export function useFirestoreFunctions() {
     watchGameState,
     getPlayerCards,
     getGameState,
+    getGameTurn,
     isLoading,
   };
 }

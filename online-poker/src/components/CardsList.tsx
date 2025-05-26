@@ -2,6 +2,9 @@ import { useGameDetails } from "../context/GameContext";
 import { useState } from "react";
 import Card from "./Card";
 
+
+
+
 const CardsList = () => {
   const { cards } = useGameDetails();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);

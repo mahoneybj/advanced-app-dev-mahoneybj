@@ -30,7 +30,7 @@ const Lobby = () => {
   useEffect(() => {
     if (gameId) {
       const unsub = watchGameState(gameId, async (state) => {
-        if (state === "playing") {
+        if (state != "Waiting") {
           navigate(`/game/${gameId}`);
         }
       });

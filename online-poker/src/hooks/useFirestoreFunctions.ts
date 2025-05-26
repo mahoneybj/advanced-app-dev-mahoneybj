@@ -123,7 +123,6 @@ export function useFirestoreFunctions() {
     return gameAsync.execute(
       async () => {
         await deleteDoc(doc(db, "games", gameID, "members", user.uid));
-
         await updateDoc(doc(db, "games", gameID), {
           playerCount: increment(-1),
         });
@@ -331,6 +330,29 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
+  /**
+   * Handles the gameplay turn logic
+   * Is passed the gameId and selectedCards
+   * If selectedCards is empty, it will not exchange cards and skip turn
+   * If selectedCards is not empty, it will exchange cards and update the game state
+   * Checks if turns are over and will call calculate results function
+   **/
+
+  const getGameDetails = async () => {
+    return gameAsync.execute(
+      async () => {
+        const gameDoc = await getDoc(doc(db, "games", gameID));
+        if (!gameDoc.exists()) {
+          throw new Error("Game not found");
+        }
+        const gameData = gameDoc.data();
+        const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
+
+        return {deck, deckIndex, turnOrder, turnIndex, playerCount};
+      }
+    );
+  }
+
   const gameplayTurnHandling = async (
     gameId: string,
     selectedCards: string[],
@@ -418,6 +440,7 @@ export function useFirestoreFunctions() {
     getPlayerCards,
     getGameState,
     getGameTurn,
+    getGameDetails,
     gameplayTurnHandling,
     isLoading,
   };

@@ -6,7 +6,7 @@ import Card from "./Card";
 
 
 const CardsList = () => {
-  const { cards } = useGameDetails();
+  const { cards, turn } = useGameDetails();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
 
   const handleCardSelect = (card: string, isSelected: boolean) => { // AI Generated, rewrite later to understand better
@@ -25,6 +25,7 @@ const CardsList = () => {
           card={card}
           isSelected={selectedCards.includes(card)}
           onSelect={handleCardSelect}
+          turn={turn}
         />
       ))}
     </div>

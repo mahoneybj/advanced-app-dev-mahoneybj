@@ -4,11 +4,11 @@ interface GameContextProps {
   gameID: string;
   gameState: string;
   cards: string[];
-  turn: string; 
+  turn: boolean; 
   setGameID: (gameID: string) => void;
   setGameState: (gameState: string) => void;
   setCards: (cards: string[]) => void;
-  setTurn: (turn: string) => void;
+  setTurn: (turn: boolean) => void;
 }
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
@@ -17,7 +17,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameID, setGameID] = useState<string>("");
   const [gameState, setGameState] = useState<string>("waiting");
   const [cards, setCards] = useState<string[]>([]);
-  const [turn, setTurn] = useState<string>("");
+  const [turn, setTurn] = useState<boolean>(false);
 
   return (
     <GameContext.Provider

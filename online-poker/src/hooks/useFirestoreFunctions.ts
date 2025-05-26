@@ -303,15 +303,19 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const getGameTurn = (gameId: string, onUpdate: (turn: string) => void, ) =>{
+  const getGameTurn = (gameId: string, userID: string, onUpdate: (turn: string) => void, ) =>{
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
       (doc) => {
         const data = doc.data();
         if (data) {
           const { currentTurn } = data;
-          onUpdate(currentTurn);
-          setTurn(currentTurn);
+          if (currentTurn == userID) {
+            setTurn(true);
+          } else {
+            setTurn(false);
+        }
+        onUpdate(currentTurn);
         }
       },
       (error) => {

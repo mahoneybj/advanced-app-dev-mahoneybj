@@ -1,10 +1,11 @@
 interface CardProps {
   card: string;
   isSelected: boolean;
+  turn: boolean;
   onSelect: (card: string, isSelected: boolean) => void;
 }
 
-const Card = ({ card, isSelected, onSelect }: CardProps) => {
+const Card = ({ card, isSelected, onSelect, turn }: CardProps) => {
   const handleToggleSelection = () => {
     onSelect(card, !isSelected);
   };
@@ -19,14 +20,16 @@ const Card = ({ card, isSelected, onSelect }: CardProps) => {
           onClick={handleToggleSelection}
           style={{ cursor: 'pointer' }}
         />
-        <div className="card-selection">
-          <input 
-            type="checkbox" 
-            checked={isSelected}
-            onChange={handleToggleSelection}
-            id={`card-${card}`}
-          />
-        </div>
+        {turn && (
+          <div className="card-selection">
+        <input 
+          type="checkbox" 
+          checked={isSelected}
+          onChange={handleToggleSelection}
+          id={`card-${card}`}
+        />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,26 +1,32 @@
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
 import { useGameDetails } from "../../context/GameContext";
+import { useAuth } from "../../context/FirebaseAuthContext";
 import { useParams } from "react-router";
 import { useEffect } from "react";
 import CardsList from "../CardsList";
 
 const Game = () => {
-  const { getPlayerCards, getGameState } = useFirestoreFunctions();
+  const { getPlayerCards, getGameState, getGameTurn } = useFirestoreFunctions();
   const { gameId } = useParams<{ gameId: string }>();
   const { gameState } = useGameDetails();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (gameId) {
+    if (gameId && user) {
       const unsubscribe = getPlayerCards(gameId, (updatedCards) => {
         console.log("Cards updated:", updatedCards);
       });
       const unsubscribeGameState = getGameState(gameId, (state) => {
         console.log("Game state updated:", state);
       });
+      const unsubscribeGameTurn = getGameTurn(gameId, user.uid, (turn) => {
+        console.log("Game state updated:", turn);
+      });
 
       return () => {
         if (unsubscribe) unsubscribe();
         if (unsubscribeGameState) unsubscribeGameState();
+        if (unsubscribeGameTurn) unsubscribeGameTurn();
       };
     }
   }, []);

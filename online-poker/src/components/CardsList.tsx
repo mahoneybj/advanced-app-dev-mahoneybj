@@ -1,4 +1,6 @@
 import { useGameDetails } from "../context/GameContext";
+import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
+import { useParams } from "react-router";
 import { useState } from "react";
 import Card from "./Card";
 
@@ -8,6 +10,8 @@ import Card from "./Card";
 const CardsList = () => {
   const { cards, turn } = useGameDetails();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
+  const { gameId } = useParams<{ gameId: string }>();
+  const { cardExchange } = useFirestoreFunctions();
 
   const handleCardSelect = (card: string, isSelected: boolean) => { // AI Generated, rewrite later to understand better
     if (isSelected) {
@@ -16,6 +20,16 @@ const CardsList = () => {
       setSelectedCards((prev) => prev.filter((c) => c !== card));
     }
   };
+
+  const handleCardExchange = () => {
+    if (gameId){
+      cardExchange(gameId, selectedCards);
+    }
+  }
+
+  const handleSubmit = () => {
+    console.log("Submitting selected cards:", selectedCards);
+  }
 
   return (
     <div className="cards-list">
@@ -30,10 +44,10 @@ const CardsList = () => {
       ))}
       {turn && (
         <div className="game-btn">
-          <button className="exchange-btn" onClick={console.log}>
+          <button className="exchange-btn" onClick={handleCardExchange}>
             Exchange Cards
           </button>
-          <button className="submit-btn" onClick={console.log}>
+          <button className="submit-btn" onClick={handleSubmit}>
             Submit
           </button>         
         </div>

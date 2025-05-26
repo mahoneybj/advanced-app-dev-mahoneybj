@@ -10,7 +10,6 @@ const Player: React.FC<PlayerProps> = (player) => {
     <>
       <div className="player">
         <p>Player Name: {player.player}</p>
-        <p>Player ID: {player.id}</p>
       </div>
     </>
   );

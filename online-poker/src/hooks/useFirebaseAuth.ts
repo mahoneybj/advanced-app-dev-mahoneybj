@@ -7,14 +7,12 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
 import { toast } from "react-hot-toast";
 import useAsyncFunction from "./useAsyncFunction";
 
 export function useFirebaseAuth() {
   const { isLoading } = useLoading();
-  const { user } = useAuth();
 
   // Create async function handlers
   const authAsync = useAsyncFunction<any>();

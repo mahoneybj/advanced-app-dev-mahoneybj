@@ -179,6 +179,8 @@ export function useFirestoreFunctions() {
           ...doc.data(),
         }));
 
+        
+
         let currentDeckIndex = deckIndex || 0;
         const updates = [];
 
@@ -199,17 +201,30 @@ export function useFirestoreFunctions() {
           setCards(playerCards);
         }
 
+        // Set the first player as the current turn and create turn order
+        const memberIds = members.map(member => member.id);
+        const firstPlayer = memberIds[0];
+        
+        
+
+        updates.push(
+          updateDoc(doc(db, "games", gameId), {
+            currentTurn: firstPlayer,
+            turnOrder: memberIds,
+          }),
+        );
+
         // Update the game's deck index
         updates.push(
           updateDoc(doc(db, "games", gameId), {
             deckIndex: currentDeckIndex,
-            gameState: "Playing",
+            gameState: `${firstPlayer}'s turn`, // NEED TO ADD USERNAME
           }),
         );
 
         await Promise.all(updates);
 
-        setGameState("Playing");
+        setGameState(`${firstPlayer}'s turn`); 
         return gameId;
       },
       {

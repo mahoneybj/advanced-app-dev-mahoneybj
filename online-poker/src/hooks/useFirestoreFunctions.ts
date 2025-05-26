@@ -22,7 +22,8 @@ import toast from "react-hot-toast";
 export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
-  const { gameID, cards, setGameID, setGameState, setCards, setTurn } = useGameDetails();
+  const { gameID, cards, setGameID, setGameState, setCards, setTurn } =
+    useGameDetails();
 
   const gameAsync = useAsyncFunction<any>();
 
@@ -40,8 +41,8 @@ export function useFirestoreFunctions() {
           deck: deck,
           deckIndex: 0,
           gameState: "Waiting",
-          currentTurn: "",  
-          turnOrder: [], 
+          currentTurn: "",
+          turnOrder: [],
           turnIndex: 0,
           playerCount: 1,
         });
@@ -180,8 +181,6 @@ export function useFirestoreFunctions() {
           ...doc.data(),
         }));
 
-        
-
         let currentDeckIndex = deckIndex || 0;
         const updates = [];
 
@@ -203,11 +202,11 @@ export function useFirestoreFunctions() {
         }
 
         // Set the first player as the current turn and create turn order
-        const memberIds = members.map(member => member.id);
+        const memberIds = members.map((member) => member.id);
         const firstPlayer = memberIds[0];
-        
-        const playerName = members.map(member => member.displayName); // THIS COULD BE IMPROVED
-        const firstPlayerName = playerName[0]; 
+
+        const playerName = members.map((member) => member.displayName); // THIS COULD BE IMPROVED
+        const firstPlayerName = playerName[0];
 
         updates.push(
           updateDoc(doc(db, "games", gameId), {
@@ -226,7 +225,7 @@ export function useFirestoreFunctions() {
 
         await Promise.all(updates);
 
-        setGameState(`${firstPlayerName}'s turn`); 
+        setGameState(`${firstPlayerName}'s turn`);
         return gameId;
       },
       {
@@ -285,7 +284,10 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const getGameState = (gameId: string, onUpdate: (gameState: string) => void, ) =>{
+  const getGameState = (
+    gameId: string,
+    onUpdate: (gameState: string) => void,
+  ) => {
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
       (doc) => {
@@ -303,7 +305,11 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const getGameTurn = (gameId: string, userID: string, onUpdate: (turn: string) => void, ) =>{
+  const getGameTurn = (
+    gameId: string,
+    userID: string,
+    onUpdate: (turn: string) => void,
+  ) => {
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
       (doc) => {
@@ -314,8 +320,8 @@ export function useFirestoreFunctions() {
             setTurn(true);
           } else {
             setTurn(false);
-        }
-        onUpdate(currentTurn);
+          }
+          onUpdate(currentTurn);
         }
       },
       (error) => {
@@ -325,13 +331,15 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const cardExchange = async (gameId: string, selectedCards: string[]) => {
+  const gameplayTurnHandling = async (
+    gameId: string,
+    selectedCards: string[],
+  ) => {
     if (!user) {
       toast.error("You must be logged in to exchange cards");
       return;
     }
-    
-    
+
     return gameAsync.execute(
       async () => {
         const gameDoc = await getDoc(doc(db, "games", gameId));
@@ -341,58 +349,55 @@ export function useFirestoreFunctions() {
         const gameData = gameDoc.data();
         console.log("Game Data:", gameData);
         const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
-        
+
         const remainingCards = cardRemove(cards, selectedCards);
-        
+
         const newCardsNeeded = selectedCards.length;
-        
-        const newCards = deck.slice(
-          deckIndex,
-          deckIndex + newCardsNeeded
-        );
-        
+
+        const newCards = deck.slice(deckIndex, deckIndex + newCardsNeeded);
+
         const updatedCards = [...remainingCards, ...newCards];
-        
+
         const newDeckIndex = deckIndex + newCardsNeeded;
-        
+
         const nextTurnIndex = turnIndex + 1;
         let nextPlayerId;
         let nextPlayerName;
         let gameState;
-        
+
         if (nextTurnIndex >= playerCount) {
           nextPlayerId = "";
           nextPlayerName = "";
           gameState = "Calculating results"; // ADD CALL TO NEW FUNCTION
           setGameState(`Calculating results`);
-
         } else {
           nextPlayerId = turnOrder[nextTurnIndex];
-          const nextPlayerDoc = await getDoc(doc(db, "games", gameId, "members", nextPlayerId));
+          const nextPlayerDoc = await getDoc(
+            doc(db, "games", gameId, "members", nextPlayerId),
+          );
           nextPlayerName = nextPlayerDoc.data()?.displayName || "Next player";
           gameState = `${nextPlayerName}'s turn`;
           setGameState(`${nextPlayerName}'s turn`);
-
         }
-        
+
         const updates = [
           updateDoc(doc(db, "games", gameId, "members", user.uid), {
             cards: updatedCards,
           }),
-          
+
           updateDoc(doc(db, "games", gameId), {
             deckIndex: newDeckIndex,
             currentTurn: nextPlayerId,
             turnIndex: nextTurnIndex,
             gameState: gameState,
-          })
+          }),
         ];
-        
+
         await Promise.all(updates);
-        
+
         setCards(updatedCards);
-        setTurn(false); 
-        
+        setTurn(false);
+
         return gameId;
       },
       {
@@ -401,7 +406,7 @@ export function useFirestoreFunctions() {
         errorMessage: "Failed to exchange cards",
       },
     );
-  }
+  };
 
   return {
     createGame,
@@ -413,7 +418,7 @@ export function useFirestoreFunctions() {
     getPlayerCards,
     getGameState,
     getGameTurn,
-    cardExchange,
+    gameplayTurnHandling,
     isLoading,
   };
 }

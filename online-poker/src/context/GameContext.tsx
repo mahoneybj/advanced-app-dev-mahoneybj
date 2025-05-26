@@ -4,7 +4,7 @@ interface GameContextProps {
   gameID: string;
   gameState: string;
   cards: string[];
-  turn: boolean; 
+  turn: boolean;
   setGameID: (gameID: string) => void;
   setGameState: (gameState: string) => void;
   setCards: (cards: string[]) => void;
@@ -21,7 +21,16 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <GameContext.Provider
-      value={{ gameID, gameState, cards, turn, setGameID, setGameState, setCards, setTurn }}
+      value={{
+        gameID,
+        gameState,
+        cards,
+        turn,
+        setGameID,
+        setGameState,
+        setCards,
+        setTurn,
+      }}
     >
       {children}
     </GameContext.Provider>

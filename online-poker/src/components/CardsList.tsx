@@ -4,16 +4,14 @@ import { useParams } from "react-router";
 import { useState } from "react";
 import Card from "./Card";
 
-
-
-
 const CardsList = () => {
   const { cards, turn } = useGameDetails();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const { gameId } = useParams<{ gameId: string }>();
-  const { cardExchange } = useFirestoreFunctions();
+  const { gameplayTurnHandling } = useFirestoreFunctions();
 
-  const handleCardSelect = (card: string, isSelected: boolean) => { // AI Generated, rewrite later to understand better
+  const handleCardSelect = (card: string, isSelected: boolean) => {
+    // AI Generated, rewrite later to understand better
     if (isSelected) {
       setSelectedCards((prev) => [...prev, card]);
     } else {
@@ -22,14 +20,14 @@ const CardsList = () => {
   };
 
   const handleCardExchange = () => {
-    if (gameId){
-      cardExchange(gameId, selectedCards);
+    if (gameId) {
+      gameplayTurnHandling(gameId, selectedCards);
     }
-  }
+  };
 
   const handleSubmit = () => {
     console.log("Submitting selected cards:", selectedCards);
-  }
+  };
 
   return (
     <div className="cards-list">
@@ -49,11 +47,11 @@ const CardsList = () => {
           </button>
           <button className="submit-btn" onClick={handleSubmit}>
             Submit
-          </button>         
+          </button>
         </div>
-  )}
-  </div>
-  )
+      )}
+    </div>
+  );
 };
 
 export default CardsList;

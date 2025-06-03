@@ -1,20 +1,28 @@
 import PlayerList from "../PlayersList";
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
+import { useGameStart } from "../../hooks/useGameStart";
+import { useLeaveGame } from "../../hooks/useLeaveGame";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
+import { useAuth } from "../../context/FirebaseAuthContext";
 
 const Lobby = () => {
-  const { leaveGame, gameStart, watchGameState } = useFirestoreFunctions();
+  const { watchGameState } = useFirestoreFunctions();
+  const { leaveGame } = useLeaveGame();
+  const { processGameStart } = useGameStart();
   const { gameId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleLeaveGame = async () => {
-    await leaveGame();
+    if (gameId && user?.uid) {
+      await leaveGame(gameId, user.uid);
+    }
   };
 
   const handleGameStart = async () => {
     if (gameId) {
-      const result = await gameStart(gameId);
+      const result = await processGameStart(gameId);
       if (result) {
         navigate(`/game/${gameId}`);
       }

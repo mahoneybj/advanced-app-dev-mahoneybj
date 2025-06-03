@@ -14,7 +14,6 @@ import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useLoading } from "../context/IsLoadingContext";
 import { useGameDetails } from "../context/GameContext";
-import { deckShuffle } from "../utils/deckShuffle";
 import { cardRemove } from "../utils/cardRemove";
 import useAsyncFunction from "./useAsyncFunction";
 import toast from "react-hot-toast";
@@ -22,40 +21,15 @@ import toast from "react-hot-toast";
 export function useFirestoreFunctions() {
   const { isLoading } = useLoading();
   const { user } = useAuth();
-  const { gameID, cards, setGameID, setGameState, setCards, setTurn } =
+  const { gameID, cards, setGameState, setCards, setTurn } =
     useGameDetails();
 
   const gameAsync = useAsyncFunction<any>();
 
-  /* Firestore methods */
-  const createGame = async (ownerUID: string) => {
-    if (!user) {
-      toast.error("You must be logged in to create a game");
-      return;
-    }
+  const createGameDoc = async (gameData: any) => {
     return gameAsync.execute(
       async () => {
-        const deck = deckShuffle();
-        const docRef = await addDoc(collection(db, "games"), {
-          ownerUID,
-          deck: deck,
-          deckIndex: 0,
-          gameState: "Waiting",
-          currentTurn: "",
-          turnOrder: [],
-          turnIndex: 0,
-          playerCount: 1,
-        });
-
-        const gameId = docRef.id;
-
-        await setDoc(doc(db, "games", gameId, "members", ownerUID), {
-          displayName: user.displayName || "Anonymous Player",
-          isHost: true,
-        });
-        setGameID(gameId); // Set the game ID in the context
-
-        return docRef;
+        return await addDoc(collection(db, "games"), gameData);
       },
       {
         loadingMessage: "Creating game...",
@@ -65,72 +39,31 @@ export function useFirestoreFunctions() {
     );
   };
 
-  const joinGame = async (gameId: string) => {
-    if (!user) {
-      toast.error("You must be logged in to join a game");
-      return;
-    }
-
-    if (!gameId) {
-      toast.error("Please enter a game ID");
-      return;
-    }
-
+  const setGameDoc = async (
+    gameId: string,
+    uid: string,
+    gameData: any,
+  ) => {
     return gameAsync.execute(
       async () => {
-        const gameDoc = await getDoc(doc(db, "games", gameId));
-        if (!gameDoc.exists()) {
-          throw new Error("Game not found");
-        }
-
-        if (gameDoc.data().gameState !== "Waiting") {
-          toast.error("Game is already in progress");
-          return;
-        }
-
-        const memberDoc = await getDoc(
-          doc(db, "games", gameId, "members", user.uid),
-        );
-        if (memberDoc.exists()) {
-          toast.error("You're already in this game");
-          return gameId;
-        }
-
-        await setDoc(doc(db, "games", gameId, "members", user.uid), {
-          displayName: user.displayName || "Anonymous Player",
-        });
-
-        await updateDoc(doc(db, "games", gameId), {
-          playerCount: increment(1),
-        });
-        setGameID(gameId); // Set the game ID in the context *** Investigate if this wil add gameID to the context even if join fails
-        return gameId;
+        await setDoc(doc(db, "games", gameId, "members", uid), gameData);
       },
       {
-        loadingMessage: "Joining game...",
-        successMessage: "Game joined successfully!",
-        errorMessage: "Failed to join game",
+        loadingMessage: "Creating game...",
+        successMessage: "Game created successfully!",
+        errorMessage: "Failed to create game",
       },
     );
   };
 
-  const leaveGame = async () => {
-    if (!user) {
-      toast.error("You must be logged in to join a game");
-      return;
-    }
-
+  const deleteMemberDoc = async (gameId: string, memberId: string) => {
     return gameAsync.execute(
       async () => {
-        await deleteDoc(doc(db, "games", gameID, "members", user.uid));
-        await updateDoc(doc(db, "games", gameID), {
-          playerCount: increment(-1),
-        });
-        setGameID("");
+        await deleteDoc(doc(db, "games", gameId, "members", memberId));
       },
       {
         loadingMessage: "Leaving game...",
-        successMessage: "Game left successfully!",
+        successMessage: "Left game successfully!",
         errorMessage: "Failed to leave game",
       },
     );
@@ -158,19 +91,9 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const gameStart = async (gameId: string) => {
+  const getMembers = async (gameId: string) => {
     return gameAsync.execute(
       async () => {
-        const gameDoc = await getDoc(doc(db, "games", gameId));
-        if (!gameDoc.exists()) {
-          throw new Error("Game not found");
-        }
-
-        // Getting game data for deck and index
-        const gameData = gameDoc.data();
-        const { deck, deckIndex } = gameData;
-
-        // Getting members
         const membersSnapshot = await getDocs(
           collection(db, "games", gameId, "members"),
         );
@@ -179,58 +102,46 @@ export function useFirestoreFunctions() {
           displayName: doc.data().displayName,
           ...doc.data(),
         }));
+        return members;
+      },
+      {
+        loadingMessage: "Fetching game members...",
+        successMessage: "Game members fetched successfully!",
+        errorMessage: "Failed to fetch game members",
+      },
+    );
+  };
 
-        let currentDeckIndex = deckIndex || 0;
-        const updates = [];
-
-        // Deal 5 cards to each player
-        for (const member of members) {
-          const playerCards = deck.slice(
-            currentDeckIndex,
-            currentDeckIndex + 5,
-          );
-          currentDeckIndex += 5;
-
-          // Add update operation to our batch
-          updates.push(
-            updateDoc(doc(db, "games", gameId, "members", member.id), {
-              cards: playerCards,
-            }),
-          );
-          setCards(playerCards);
-        }
-
-        // Set the first player as the current turn and create turn order
-        const memberIds = members.map((member) => member.id);
-        const firstPlayer = memberIds[0];
-
-        const playerName = members.map((member) => member.displayName); // THIS COULD BE IMPROVED
-        const firstPlayerName = playerName[0];
-
-        updates.push(
-          updateDoc(doc(db, "games", gameId), {
-            currentTurn: firstPlayer,
-            turnOrder: memberIds,
-          }),
-        );
-
-        // Update the game's deck index
-        updates.push(
-          updateDoc(doc(db, "games", gameId), {
-            deckIndex: currentDeckIndex,
-            gameState: `${firstPlayerName}'s turn`, // NEED TO ADD USERNAME
-          }),
-        );
-
-        await Promise.all(updates);
-
-        setGameState(`${firstPlayerName}'s turn`);
-        return gameId;
+  const updateGameDoc = async (gameId: string, updates: any) => {
+    return gameAsync.execute(
+      async () => {
+        updateDoc(doc(db, "games", gameId), {
+          updates,
+        });
       },
       {
         loadingMessage: "Starting game...",
         successMessage: "Game started successfully!",
         errorMessage: "Failed to start game",
+      },
+    );
+  };
+
+  const updateMembersDoc = async (
+    gameId: string,
+    updates: any,
+    member: any,
+  ) => {
+    return gameAsync.execute(
+      async () => {
+        updateDoc(doc(db, "games", gameId, "members", member.id), {
+          updates,
+        });
+      },
+      {
+        loadingMessage: "Dealing cards...",
+        successMessage: "Cards dealt successfully!",
+        errorMessage: "Failed to deal cards",
       },
     );
   };
@@ -338,20 +249,24 @@ export function useFirestoreFunctions() {
    * Checks if turns are over and will call calculate results function
    **/
 
-  const getGameDetails = async () => {
-    return gameAsync.execute(
-      async () => {
-        const gameDoc = await getDoc(doc(db, "games", gameID));
-        if (!gameDoc.exists()) {
-          throw new Error("Game not found");
-        }
-        const gameData = gameDoc.data();
-        const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
-
-        return {deck, deckIndex, turnOrder, turnIndex, playerCount};
+  const getGameDetails = async (gameId: string) => {
+    return gameAsync.execute(async () => {
+      const gameDoc = await getDoc(doc(db, "games", gameId || gameID));
+      if (!gameDoc.exists()) {
+        throw new Error("Game not found");
       }
-    );
-  }
+      const gameData = gameDoc.data();
+      const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
+
+      return {
+        deck,
+        deckIndex,
+        turnOrder,
+        turnIndex,
+        playerCount,
+      };
+    });
+  };
 
   const gameplayTurnHandling = async (
     gameId: string,
@@ -431,11 +346,7 @@ export function useFirestoreFunctions() {
   };
 
   return {
-    createGame,
-    joinGame,
-    leaveGame,
     getGameMembers,
-    gameStart,
     watchGameState,
     getPlayerCards,
     getGameState,
@@ -443,5 +354,12 @@ export function useFirestoreFunctions() {
     getGameDetails,
     gameplayTurnHandling,
     isLoading,
+
+    updateGameDoc,
+    updateMembersDoc,
+    getMembers,
+    deleteMemberDoc,
+    createGameDoc,
+    setGameDoc,
   };
 }

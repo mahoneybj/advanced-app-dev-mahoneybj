@@ -1,6 +1,7 @@
 import { useAuth } from "../../context/FirebaseAuthContext";
 import { useNavigate } from "react-router";
-import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
+import { useCreateGame } from "../../hooks/useCreateGame";
+import { useGameJoin } from "../../hooks/useGameJoin";
 import { useEffect, useState } from "react";
 import { useLoading } from "../../context/IsLoadingContext";
 import { useGameDetails } from "../../context/GameContext";
@@ -9,13 +10,14 @@ const LandingPage = () => {
   const { user } = useAuth();
   const { gameID, setGameID } = useGameDetails();
   const navigate = useNavigate();
-  const { createGame, joinGame } = useFirestoreFunctions();
+  const { processGameJoin } = useGameJoin();
+  const { processGameCreate } = useCreateGame();
   const { isLoading } = useLoading();
   const [gameIDInput, setGameIDInput] = useState("");
 
   const handleCreateGame = async () => {
     if (!user) return;
-    const result = await createGame(user.uid);
+    const result = await processGameCreate(user.uid);
     if (result) {
       const gameId = result.id;
       navigate(`/lobby/${gameId}`);
@@ -24,7 +26,7 @@ const LandingPage = () => {
 
   const handleJoinGame = async () => {
     if (!user) return;
-    const result = await joinGame(gameIDInput);
+    const result = await processGameJoin(gameIDInput);
     if (result) {
       setGameID(gameIDInput);
       navigate(`/lobby/${gameID}`);

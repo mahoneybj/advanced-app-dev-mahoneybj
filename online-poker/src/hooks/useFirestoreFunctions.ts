@@ -129,13 +129,13 @@ export function useFirestoreFunctions() {
 
   const updateMembersDoc = async (
     gameId: string,
+    memberId: string, 
     updates: any,
-    member: any,
   ) => {
     return gameAsync.execute(
       async () => {
-        updateDoc(doc(db, "games", gameId, "members", member.id), {
-          updates,
+        updateDoc(doc(db, "games", gameId, "members", memberId), {
+          ...updates, 
         });
       },
       {

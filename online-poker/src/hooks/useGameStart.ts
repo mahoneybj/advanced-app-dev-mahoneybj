@@ -1,9 +1,12 @@
 import { GameData, Member } from "../utils/gameTypes";
 import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
+import { useGameDetails } from "../context/GameContext";
+
 
 export const useGameStart = () => {
   const { updateGameDoc, updateMembersDoc, getMembers, getGameDetails } =
     useFirestoreFunctions();
+    const { setCards, setGameState } = useGameDetails();
 
   const processGameStart = async (
     gameId: string,
@@ -24,6 +27,7 @@ export const useGameStart = () => {
       await updateMembersDoc(gameId, Member.id, {
         cards: playerCards,
       });
+      setCards(playerCards);
     }
 
     // Update game data
@@ -40,6 +44,7 @@ export const useGameStart = () => {
     };
 
     await updateGameDoc(gameId, gameUpdates);
+    setGameState(`${firstPlayerName}'s turn`);
 
     // Return updated game data and members
     const updatedGameData = {

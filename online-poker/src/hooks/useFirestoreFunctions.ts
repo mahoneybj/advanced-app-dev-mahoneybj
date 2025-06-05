@@ -7,7 +7,6 @@ import {
   onSnapshot,
   setDoc,
   getDoc,
-  increment,
   getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
@@ -354,7 +353,8 @@ export function useFirestoreFunctions() {
     getGameDetails,
     gameplayTurnHandling,
     isLoading,
-
+    
+//Important VVV
     updateGameDoc,
     updateMembersDoc,
     getMembers,

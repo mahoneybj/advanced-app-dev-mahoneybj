@@ -1,5 +1,5 @@
 import { useGameDetails } from "../context/GameContext";
-import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
+import { useGameplayHandling } from "../hooks/useGameplayHandling";
 import { useParams } from "react-router";
 import { useState } from "react";
 import Card from "./Card";
@@ -8,7 +8,7 @@ const CardsList = () => {
   const { cards, turn } = useGameDetails();
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const { gameId } = useParams<{ gameId: string }>();
-  const { gameplayTurnHandling } = useFirestoreFunctions();
+  const { processGameTurnHandling } = useGameplayHandling();
 
   const handleCardSelect = (card: string, isSelected: boolean) => {
     // AI Generated, rewrite later to understand better
@@ -21,7 +21,7 @@ const CardsList = () => {
 
   const handleCardExchange = () => {
     if (gameId) {
-      gameplayTurnHandling(gameId, selectedCards);
+      processGameTurnHandling(gameId, selectedCards);
     }
   };
 

@@ -20,11 +20,11 @@ export const useGameJoin = () => {
     }
 
     const gameData = await getGameDetails(gameId);
-    if (!gameData.exists()) {
+    if (!gameData) {
       throw new Error("Game not found");
     }
 
-    if (gameData.data().gameState !== "Waiting") {
+    if (gameData.gameState !== "Waiting") {
       toast.error("Game is already in progress");
       return;
     }

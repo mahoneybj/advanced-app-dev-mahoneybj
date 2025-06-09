@@ -111,20 +111,35 @@ export function useFirestoreFunctions() {
     );
   };
 
-  const updateGameDoc = async (gameId: string, updates: any) => {
+  const getMember = async (gameId: string, memberID: string) => {
     return gameAsync.execute(
       async () => {
-        updateDoc(doc(db, "games", gameId), {
-          updates,
-        });
+        const member = await getDocs(
+          collection(db, "games", gameId, "members", memberID),
+        );
+
+        return member;
       },
       {
-        loadingMessage: "Starting game...",
-        successMessage: "Game started successfully!",
-        errorMessage: "Failed to start game",
+        loadingMessage: "Fetching game member...",
+        successMessage: "Game member fetched successfully!",
+        errorMessage: "Failed to fetch game members",
       },
     );
   };
+
+  const updateGameDoc = async (gameId: string, updates: any) => {
+  return gameAsync.execute(
+    async () => {
+      updateDoc(doc(db, "games", gameId), updates);
+    },
+    {
+      loadingMessage: "ADD BETTER LOADING MESSAGE HERE...",
+      successMessage: "ADD BETTER SUCCESS MESSAGE HERE...",
+      errorMessage: "Failed to start game",
+    },
+  );
+};
 
   const updateMembersDoc = async (
     gameId: string,
@@ -255,7 +270,7 @@ export function useFirestoreFunctions() {
         throw new Error("Game not found");
       }
       const gameData = gameDoc.data();
-      const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
+      const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState } = gameData;
 
       return {
         deck,
@@ -263,11 +278,12 @@ export function useFirestoreFunctions() {
         turnOrder,
         turnIndex,
         playerCount,
+        gameState
       };
     });
   };
 
-  const gameplayTurnHandling = async (
+/*   const gameplayTurnHandling = async (
     gameId: string,
     selectedCards: string[],
   ) => {
@@ -342,7 +358,7 @@ export function useFirestoreFunctions() {
         errorMessage: "Failed to exchange cards",
       },
     );
-  };
+  }; */
 
   return {
     getGameMembers,
@@ -351,13 +367,13 @@ export function useFirestoreFunctions() {
     getGameState,
     getGameTurn,
     getGameDetails,
-    gameplayTurnHandling,
     isLoading,
     
 //Important VVV
     updateGameDoc,
     updateMembersDoc,
     getMembers,
+    getMember,
     deleteMemberDoc,
     createGameDoc,
     setGameDoc,

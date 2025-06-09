@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useAuth } from "../../context/FirebaseAuthContext";
 
 const Lobby = () => {
-  const { watchGameState } = useFirestoreFunctions();
+  const { watchGameDetails } = useFirestoreFunctions();
   const { leaveGame } = useLeaveGame();
   const { processGameStart } = useGameStart();
   const { gameId } = useParams();
@@ -37,8 +37,8 @@ const Lobby = () => {
 
   useEffect(() => {
     if (gameId) {
-      const unsub = watchGameState(gameId, async (state) => {
-        if (state !== "Waiting") {
+      const unsub = watchGameDetails(gameId, async (gameDetails) => {
+        if (gameDetails.gameState !== "Waiting") {
           navigate(`/game/${gameId}`);
         }
       });

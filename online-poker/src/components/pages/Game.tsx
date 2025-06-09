@@ -6,20 +6,20 @@ import { useEffect } from "react";
 import CardsList from "../CardsList";
 
 const Game = () => {
-  const { getPlayerCards, getGameState, getGameTurn } = useFirestoreFunctions();
+  const { watchGameDetails, watchGameMembers } = useFirestoreFunctions();
   const { gameId } = useParams<{ gameId: string }>();
   const { gameState } = useGameDetails();
   const { user } = useAuth();
 
   useEffect(() => {
     if (gameId && user) {
-      const unsubscribe = getPlayerCards(gameId, (updatedCards) => {
+      const unsubscribe = watchGameMembers(gameId, (updatedCards) => {
         console.log("Cards updated:", updatedCards);
       });
-      const unsubscribeGameState = getGameState(gameId, (state) => {
+      const unsubscribeGameState = watchGameDetails(gameId, (state) => {
         console.log("Game state updated:", state);
       });
-      const unsubscribeGameTurn = getGameTurn(gameId, user.uid, (turn) => {
+      const unsubscribeGameTurn = watchGameDetails(gameId, (turn) => {
         console.log("Game state updated:", turn);
       });
 

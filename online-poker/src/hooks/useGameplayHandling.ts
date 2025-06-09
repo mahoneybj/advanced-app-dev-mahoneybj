@@ -47,7 +47,7 @@ export const useGameplayHandling = () => {
 
           const nextPlayerDoc = await getMember(gameId, nextPlayerId);
 
-          nextPlayerName = nextPlayerDoc.data()?.displayName || "Next player";
+          nextPlayerName = nextPlayerDoc.displayName || "Next player";
           gameState = `${nextPlayerName}'s turn`;
           setGameState(`${nextPlayerName}'s turn`);
         }

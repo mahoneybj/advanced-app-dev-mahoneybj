@@ -114,11 +114,17 @@ export function useFirestoreFunctions() {
   const getMember = async (gameId: string, memberID: string) => {
     return gameAsync.execute(
       async () => {
-        const member = await getDocs(
-          collection(db, "games", gameId, "members", memberID),
-        );
+        const memberDoc = await getDoc(
+        doc(db, "games", gameId, "members", memberID)
+      );
 
-        return member;
+      if (!memberDoc.exists()) {
+        throw new Error("Member not found");
+      }
+
+      return {
+        ...memberDoc.data()
+      };
       },
       {
         loadingMessage: "Fetching game member...",
@@ -208,51 +214,63 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
-  const getGameState = (
-    gameId: string,
-    onUpdate: (gameState: string) => void,
-  ) => {
+  const watchGameDetails = (gameId: string, onUpdate: (gameDetails: any) => void) => {
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
-      (doc) => {
-        const data = doc.data();
+      (docSnapshot) => {
+        const data = docSnapshot.data();
         if (data) {
-          const { gameState } = data;
-          onUpdate(gameState);
-          setGameState(gameState);
+          setGameState(data.gameState);
+          if (user) {
+            setTurn(data.currentTurn === user.uid);
+          }
+          onUpdate(data);
         }
       },
       (error) => {
-        toast.error(`Error fetching game state: ${error.message}`);
-      },
+        toast.error(`Error fetching game details: ${error.message}`);
+        console.error("Error fetching game details:", error);
+      }
     );
     return unsubscribe;
   };
 
-  const getGameTurn = (
-    gameId: string,
-    userID: string,
-    onUpdate: (turn: string) => void,
-  ) => {
-    const unsubscribe = onSnapshot(
-      doc(db, "games", gameId),
-      (doc) => {
-        const data = doc.data();
-        if (data) {
-          const { currentTurn } = data;
-          if (currentTurn === userID) {
-            setTurn(true);
-          } else {
-            setTurn(false);
-          }
-          onUpdate(currentTurn);
-        }
+    const watchGameMembers = (gameId: string, onUpdate: (members: any[]) => void) => {
+    const membersUnsubscribe = onSnapshot(
+      collection(db, "games", gameId, "members"),
+      (snapshot) => {
+        const members = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        onUpdate(members);
       },
       (error) => {
-        toast.error(`Error fetching game turn: ${error.message}`);
-      },
+        toast.error(`Error fetching game members: ${error.message}`);
+        console.error("Error fetching game members:", error);
+      }
     );
-    return unsubscribe;
+    let cardsUnsubscribe = () => {};
+    if (user) {
+      cardsUnsubscribe = onSnapshot(
+        doc(db, "games", gameId, "members", user.uid),
+        (docSnapshot) => {
+          const data = docSnapshot.data();
+          if (data && data.cards) {
+            setCards(data.cards);
+          }
+        },
+        (error) => {
+          toast.error(`Error fetching player cards: ${error.message}`);
+          console.error("Error fetching player cards:", error);
+        }
+      );
+    }
+    
+    return () => {
+      membersUnsubscribe();
+      cardsUnsubscribe();
+    };
   };
 
   /**
@@ -283,93 +301,12 @@ export function useFirestoreFunctions() {
     });
   };
 
-/*   const gameplayTurnHandling = async (
-    gameId: string,
-    selectedCards: string[],
-  ) => {
-    if (!user) {
-      toast.error("You must be logged in to exchange cards");
-      return;
-    }
 
-    return gameAsync.execute(
-      async () => {
-        const gameDoc = await getDoc(doc(db, "games", gameId));
-        if (!gameDoc.exists()) {
-          throw new Error("Game not found");
-        }
-        const gameData = gameDoc.data();
-        console.log("Game Data:", gameData);
-        const { deck, deckIndex, turnOrder, turnIndex, playerCount } = gameData;
-
-        const remainingCards = cardRemove(cards, selectedCards);
-
-        const newCardsNeeded = selectedCards.length;
-
-        const newCards = deck.slice(deckIndex, deckIndex + newCardsNeeded);
-
-        const updatedCards = [...remainingCards, ...newCards];
-
-        const newDeckIndex = deckIndex + newCardsNeeded;
-
-        const nextTurnIndex = turnIndex + 1;
-        let nextPlayerId;
-        let nextPlayerName;
-        let gameState;
-
-        if (nextTurnIndex >= playerCount) {
-          nextPlayerId = "";
-          nextPlayerName = "";
-          gameState = "Calculating results"; // ADD CALL TO NEW FUNCTION
-          setGameState(`Calculating results`);
-        } else {
-          nextPlayerId = turnOrder[nextTurnIndex];
-          const nextPlayerDoc = await getDoc(
-            doc(db, "games", gameId, "members", nextPlayerId),
-          );
-          nextPlayerName = nextPlayerDoc.data()?.displayName || "Next player";
-          gameState = `${nextPlayerName}'s turn`;
-          setGameState(`${nextPlayerName}'s turn`);
-        }
-
-        const updates = [
-          updateDoc(doc(db, "games", gameId, "members", user.uid), {
-            cards: updatedCards,
-          }),
-
-          updateDoc(doc(db, "games", gameId), {
-            deckIndex: newDeckIndex,
-            currentTurn: nextPlayerId,
-            turnIndex: nextTurnIndex,
-            gameState: gameState,
-          }),
-        ];
-
-        await Promise.all(updates);
-
-        setCards(updatedCards);
-        setTurn(false);
-
-        return gameId;
-      },
-      {
-        loadingMessage: "Exchanging cards...",
-        successMessage: "Cards exchanged successfully!",
-        errorMessage: "Failed to exchange cards",
-      },
-    );
-  }; */
 
   return {
-    getGameMembers,
-    watchGameState,
-    getPlayerCards,
-    getGameState,
-    getGameTurn,
+    watchGameDetails,
     getGameDetails,
-    isLoading,
-    
-//Important VVV
+    watchGameMembers,
     updateGameDoc,
     updateMembersDoc,
     getMembers,

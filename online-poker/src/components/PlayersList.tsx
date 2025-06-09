@@ -9,12 +9,12 @@ interface PlayersListProps {
 
 const PlayersList: React.FC<PlayersListProps> = ({ gameID }) => {
   const [players, setPlayers] = useState<any[]>();
-  const { getGameMembers } = useFirestoreFunctions();
+  const { watchGameMembers } = useFirestoreFunctions();
 
   useEffect(() => {
     if (!gameID) return;
 
-    const unsubscribe = getGameMembers(gameID, (members) => {
+    const unsubscribe = watchGameMembers(gameID, (members) => {
       setPlayers(members);
     });
 

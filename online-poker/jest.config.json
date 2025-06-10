@@ -1,0 +1,8 @@
+{
+  "testEnvironment": "jsdom",
+  "transform": {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.svg$": "jest-transformer-svg",
+    "^.+\\.css$": "jest-transform-css"
+  }
+}

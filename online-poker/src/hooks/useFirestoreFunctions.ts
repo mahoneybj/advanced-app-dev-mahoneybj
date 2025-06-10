@@ -11,16 +11,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
-import { useLoading } from "../context/IsLoadingContext";
 import { useGameDetails } from "../context/GameContext";
-import { cardRemove } from "../utils/cardRemove";
 import useAsyncFunction from "./useAsyncFunction";
 import toast from "react-hot-toast";
 
 export function useFirestoreFunctions() {
-  const { isLoading } = useLoading();
   const { user } = useAuth();
-  const { gameID, cards, setGameState, setCards, setTurn } =
+  const { gameID, setGameState, setCards, setTurn, setWinnerID, setGameEnded, setWinnerName } =
     useGameDetails();
 
   const gameAsync = useAsyncFunction<any>();
@@ -66,28 +63,6 @@ export function useFirestoreFunctions() {
         errorMessage: "Failed to leave game",
       },
     );
-  };
-
-  const getGameMembers = (
-    gameId: string,
-    onUpdate: (members: any[]) => void,
-  ) => {
-    const unsubscribe = onSnapshot(
-      collection(db, "games", gameId, "members"),
-      (snapshot) => {
-        const members = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        onUpdate(members);
-      },
-      (error) => {
-        toast.error(`Error fetching game members: ${error.message}`);
-        console.error("Error fetching game members:", error);
-      },
-    );
-
-    return unsubscribe;
   };
 
   const getMembers = async (gameId: string) => {
@@ -166,53 +141,6 @@ export function useFirestoreFunctions() {
     );
   };
 
-  const watchGameState = (
-    gameId: string,
-    onUpdate: (gameState: string) => void,
-  ) => {
-    const unsubscribe = onSnapshot(
-      doc(db, "games", gameId),
-      (doc) => {
-        const data = doc.data();
-        if (data) {
-          const { gameState } = data;
-          onUpdate(gameState);
-          setGameState(gameState);
-        }
-      },
-      (error) => {
-        toast.error(`Error fetching game state: ${error.message}`);
-        console.error("Error fetching game state:", error);
-      },
-    );
-    return unsubscribe;
-  };
-
-  const getPlayerCards = (
-    gameId: string,
-    onUpdate: (cards: string[]) => void,
-  ) => {
-    if (!user) {
-      toast.error("You must be logged in to view your cards");
-      return;
-    }
-    const unsubscribe = onSnapshot(
-      doc(db, "games", gameId, "members", user.uid),
-      (doc) => {
-        const data = doc.data();
-        if (data) {
-          const { cards } = data;
-          onUpdate(cards);
-          setCards(cards);
-        }
-      },
-      (error) => {
-        toast.error(`Error fetching cards: ${error.message}`);
-        console.error("Error fetching cards:", error);
-      },
-    );
-    return unsubscribe;
-  };
 
   const watchGameDetails = (gameId: string, onUpdate: (gameDetails: any) => void) => {
     const unsubscribe = onSnapshot(
@@ -221,6 +149,10 @@ export function useFirestoreFunctions() {
         const data = docSnapshot.data();
         if (data) {
           setGameState(data.gameState);
+          setWinnerID(data.winner);
+          setWinnerName(data.winnerName || "");
+          setGameEnded(data.gameEnded || false);
+          
           if (user) {
             setTurn(data.currentTurn === user.uid);
           }
@@ -272,14 +204,6 @@ export function useFirestoreFunctions() {
       cardsUnsubscribe();
     };
   };
-
-  /**
-   * Handles the gameplay turn logic
-   * Is passed the gameId and selectedCards
-   * If selectedCards is empty, it will not exchange cards and skip turn
-   * If selectedCards is not empty, it will exchange cards and update the game state
-   * Checks if turns are over and will call calculate results function
-   **/
 
   const getGameDetails = async (gameId: string) => {
     return gameAsync.execute(async () => {

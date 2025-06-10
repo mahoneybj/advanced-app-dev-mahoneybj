@@ -1,27 +1,26 @@
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
 import { useGameDetails } from "../../context/GameContext";
 import { useAuth } from "../../context/FirebaseAuthContext";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useEffect } from "react";
 import CardsList from "../CardsList";
 
 const Game = () => {
   const { watchGameDetails, watchGameMembers } = useFirestoreFunctions();
   const { gameId } = useParams<{ gameId: string }>();
-  const { gameState } = useGameDetails();
+  const { gameState, gameEnded } = useGameDetails();
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
     if (gameId && user) {
       const unsubscribe = watchGameMembers(gameId, (updatedCards) => {
-        console.log("Cards updated:", updatedCards);
       });
       const unsubscribeGameState = watchGameDetails(gameId, (state) => {
-        console.log("Game state updated:", state);
       });
-      const unsubscribeGameTurn = watchGameDetails(gameId, (turn) => {
-        console.log("Game state updated:", turn);
+      const unsubscribeGameTurn = watchGameDetails(gameId, (details) => {
       });
+
 
       return () => {
         if (unsubscribe) unsubscribe();
@@ -30,6 +29,12 @@ const Game = () => {
       };
     }
   }, []);
+
+    useEffect(() => {
+    if (gameEnded) {
+      navigate(`/winner`);
+    }
+  }, [gameEnded, navigate]);
 
   return (
     <div className="game">

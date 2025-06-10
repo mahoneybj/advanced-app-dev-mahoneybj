@@ -8,6 +8,7 @@ import { Routes, Route } from "react-router";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { GameProvider } from "./context/GameContext";
 import Game from "./components/pages/Game";
+import Winner from "./components/pages/Winner";
 
 const App = () => {
   useEffect(() => {
@@ -66,6 +67,16 @@ const App = () => {
               <GameProvider>
                 <ProtectedRoute>
                   <Game />
+                </ProtectedRoute>
+              </GameProvider>
+            }
+          />
+          <Route
+            path="/winner"
+            element={
+              <GameProvider>
+                <ProtectedRoute>
+                  <Winner />
                 </ProtectedRoute>
               </GameProvider>
             }

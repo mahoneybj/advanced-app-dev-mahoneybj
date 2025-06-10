@@ -2,6 +2,7 @@ import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useGameDetails } from "../context/GameContext";
 import { cardRemove } from "../utils/cardRemove";
+import useWinnerHandling from "./useWinnerHandling";
 import toast from "react-hot-toast";
 
 
@@ -9,6 +10,7 @@ export const useGameplayHandling = () => {
   const { getGameDetails, getMember, updateMembersDoc, updateGameDoc } = useFirestoreFunctions();
   const { user } = useAuth();
   const { cards, setCards, setTurn, setGameState } = useGameDetails();
+  const { determineWinner } = useWinnerHandling();
 
   const processGameTurnHandling = async (gameId: string, selectedCards: string[]) => {
    if (!user) {
@@ -40,8 +42,21 @@ export const useGameplayHandling = () => {
     if (nextTurnIndex >= gameData.playerCount) {
           nextPlayerId = "";
           nextPlayerName = "";
-          gameState = "Calculating results"; // ADD CALL TO NEW FUNCTION
+          gameState = "Calculating results";
           setGameState(`Calculating results`);
+          
+          await updateMembersDoc(gameId, user.uid, {
+            cards: updatedCards,
+          });
+          
+          await updateGameDoc(gameId, {
+            deckIndex: newDeckIndex,
+            currentTurn: nextPlayerId,
+            turnIndex: nextTurnIndex,
+            gameState: gameState,
+          });
+          
+          await determineWinner(gameId);
         } else {
           nextPlayerId = gameData.turnOrder[nextTurnIndex];
 

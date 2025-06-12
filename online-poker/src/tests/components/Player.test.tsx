@@ -5,19 +5,19 @@ import { createMockPlayer } from '../mock-utils';
 
 describe('Player Component', () => {
   test('should render player name correctly', () => {
-    const mockPlayer = createMockPlayer({ displayName: 'John Doe' });
+    const mockPlayer = createMockPlayer({ displayName: 'Ben' });
     
     render(<Player player={mockPlayer.displayName} id={mockPlayer.id} />);
-    
-    expect(screen.getByText('Player Name: John Doe')).toBeInTheDocument();
+
+    expect(screen.getByText('Player Name: Ben')).toBeInTheDocument();
   });
 
   test('should render with different player name', () => {
-    const mockPlayer = createMockPlayer({ displayName: 'Jane Smith' });
+    const mockPlayer = createMockPlayer({ displayName: 'Benjamin' });
     
     render(<Player player={mockPlayer.displayName} id={mockPlayer.id} />);
     
-    expect(screen.getByText('Player Name: Jane Smith')).toBeInTheDocument();
+    expect(screen.getByText('Player Name: Benjamin')).toBeInTheDocument();
   });
 
   test('should render with empty player name', () => {

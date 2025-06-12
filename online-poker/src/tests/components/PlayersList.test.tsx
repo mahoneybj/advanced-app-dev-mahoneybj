@@ -39,8 +39,8 @@ describe('PlayersList Component', () => {
   });
 
   test('should render single player', async () => {
-    const mockPlayer = createMockPlayer({ id: 'player-1', displayName: 'John Doe' });
-    
+    const mockPlayer = createMockPlayer({ id: 'player-1', displayName: 'Ben' });
+
     mockWatchGameMembers.mockImplementation((gameId, callback) => {
       callback([mockPlayer]);
       return mockUnsubscribe;
@@ -50,7 +50,7 @@ describe('PlayersList Component', () => {
     
     await waitFor(() => {
       expect(screen.getByTestId('player-player-1')).toBeInTheDocument();
-      expect(screen.getByText('Player Name: John Doe')).toBeInTheDocument();
+      expect(screen.getByText('Player Name: Ben')).toBeInTheDocument();
     });
   });
 

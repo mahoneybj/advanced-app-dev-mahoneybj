@@ -2,7 +2,6 @@ import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
 import { increment } from "firebase/firestore";
 import { useGameDetails } from "../context/GameContext";
 
-
 export function useLeaveGame() {
   const { updateGameDoc, deleteMemberDoc } = useFirestoreFunctions();
   const { setGameID } = useGameDetails();

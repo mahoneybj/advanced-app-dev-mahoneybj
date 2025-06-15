@@ -38,7 +38,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setWinnerID("");
     setGameEnded(false);
   };
-  
+
   return (
     <GameContext.Provider
       value={{
@@ -56,7 +56,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setWinnerName,
         setWinnerID,
         setGameEnded,
-        resetGame
+        resetGame,
       }}
     >
       {children}

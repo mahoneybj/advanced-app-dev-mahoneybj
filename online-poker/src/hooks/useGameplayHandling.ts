@@ -5,15 +5,18 @@ import { cardRemove } from "../utils/cardRemove";
 import useWinnerHandling from "./useWinnerHandling";
 import toast from "react-hot-toast";
 
-
 export const useGameplayHandling = () => {
-  const { getGameDetails, getMember, updateMembersDoc, updateGameDoc } = useFirestoreFunctions();
+  const { getGameDetails, getMember, updateMembersDoc, updateGameDoc } =
+    useFirestoreFunctions();
   const { user } = useAuth();
   const { cards, setCards, setTurn, setGameState } = useGameDetails();
   const { determineWinner } = useWinnerHandling();
 
-  const processGameTurnHandling = async (gameId: string, selectedCards: string[]) => {
-   if (!user) {
+  const processGameTurnHandling = async (
+    gameId: string,
+    selectedCards: string[],
+  ) => {
+    if (!user) {
       toast.error("You must be logged in to join a game");
       return;
     }
@@ -25,63 +28,65 @@ export const useGameplayHandling = () => {
     const gameData = await getGameDetails(gameId);
 
     const remainingCards = cardRemove(cards, selectedCards);
-    
+
     const newCardsNeeded = selectedCards.length;
-    
-    const newCards = gameData.deck.slice(gameData.deckIndex, gameData.deckIndex + newCardsNeeded);
-    
+
+    const newCards = gameData.deck.slice(
+      gameData.deckIndex,
+      gameData.deckIndex + newCardsNeeded,
+    );
+
     const updatedCards = [...remainingCards, ...newCards];
-    
+
     const newDeckIndex = gameData.deckIndex + newCardsNeeded;
-    
+
     const nextTurnIndex = gameData.turnIndex + 1;
     let nextPlayerId;
     let nextPlayerName;
     let gameState;
 
     if (nextTurnIndex >= gameData.playerCount) {
-          nextPlayerId = "";
-          nextPlayerName = "";
-          gameState = "Calculating results";
-          setGameState(`Calculating results`);
-          
-          await updateMembersDoc(gameId, user.uid, {
-            cards: updatedCards,
-          });
-          
-          await updateGameDoc(gameId, {
-            deckIndex: newDeckIndex,
-            currentTurn: nextPlayerId,
-            turnIndex: nextTurnIndex,
-            gameState: gameState,
-          });
-          
-          await determineWinner(gameId);
-        } else {
-          nextPlayerId = gameData.turnOrder[nextTurnIndex];
+      nextPlayerId = "";
+      nextPlayerName = "";
+      gameState = "Calculating results";
+      setGameState(`Calculating results`);
 
-          const nextPlayerDoc = await getMember(gameId, nextPlayerId);
+      await updateMembersDoc(gameId, user.uid, {
+        cards: updatedCards,
+      });
 
-          nextPlayerName = nextPlayerDoc.displayName || "Next player";
-          gameState = `${nextPlayerName}'s turn`;
-          setGameState(`${nextPlayerName}'s turn`);
-        }
+      await updateGameDoc(gameId, {
+        deckIndex: newDeckIndex,
+        currentTurn: nextPlayerId,
+        turnIndex: nextTurnIndex,
+        gameState: gameState,
+      });
+
+      await determineWinner(gameId);
+    } else {
+      nextPlayerId = gameData.turnOrder[nextTurnIndex];
+
+      const nextPlayerDoc = await getMember(gameId, nextPlayerId);
+
+      nextPlayerName = nextPlayerDoc.displayName || "Next player";
+      gameState = `${nextPlayerName}'s turn`;
+      setGameState(`${nextPlayerName}'s turn`);
+    }
 
     await updateMembersDoc(gameId, user.uid, {
       cards: updatedCards,
     });
 
     await updateGameDoc(gameId, {
-        deckIndex: newDeckIndex,
-        currentTurn: nextPlayerId,
-        turnIndex: nextTurnIndex,
-        gameState: gameState,
+      deckIndex: newDeckIndex,
+      currentTurn: nextPlayerId,
+      turnIndex: nextTurnIndex,
+      gameState: gameState,
     });
     setCards(updatedCards);
     setTurn(false);
 
     return gameId;
-
   };
 
   return {

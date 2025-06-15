@@ -17,8 +17,15 @@ import toast from "react-hot-toast";
 
 export function useFirestoreFunctions() {
   const { user } = useAuth();
-  const { gameID, setGameState, setCards, setTurn, setWinnerID, setGameEnded, setWinnerName } =
-    useGameDetails();
+  const {
+    gameID,
+    setGameState,
+    setCards,
+    setTurn,
+    setWinnerID,
+    setGameEnded,
+    setWinnerName,
+  } = useGameDetails();
 
   const gameAsync = useAsyncFunction<any>();
 
@@ -35,11 +42,7 @@ export function useFirestoreFunctions() {
     );
   };
 
-  const setGameDoc = async (
-    gameId: string,
-    uid: string,
-    gameData: any,
-  ) => {
+  const setGameDoc = async (gameId: string, uid: string, gameData: any) => {
     return gameAsync.execute(
       async () => {
         await setDoc(doc(db, "games", gameId, "members", uid), gameData);
@@ -90,16 +93,16 @@ export function useFirestoreFunctions() {
     return gameAsync.execute(
       async () => {
         const memberDoc = await getDoc(
-        doc(db, "games", gameId, "members", memberID)
-      );
+          doc(db, "games", gameId, "members", memberID),
+        );
 
-      if (!memberDoc.exists()) {
-        throw new Error("Member not found");
-      }
+        if (!memberDoc.exists()) {
+          throw new Error("Member not found");
+        }
 
-      return {
-        ...memberDoc.data()
-      };
+        return {
+          ...memberDoc.data(),
+        };
       },
       {
         loadingMessage: "Fetching game member...",
@@ -110,27 +113,27 @@ export function useFirestoreFunctions() {
   };
 
   const updateGameDoc = async (gameId: string, updates: any) => {
-  return gameAsync.execute(
-    async () => {
-      updateDoc(doc(db, "games", gameId), updates);
-    },
-    {
-      loadingMessage: "ADD BETTER LOADING MESSAGE HERE...",
-      successMessage: "ADD BETTER SUCCESS MESSAGE HERE...",
-      errorMessage: "Failed to start game",
-    },
-  );
-};
+    return gameAsync.execute(
+      async () => {
+        updateDoc(doc(db, "games", gameId), updates);
+      },
+      {
+        loadingMessage: "ADD BETTER LOADING MESSAGE HERE...",
+        successMessage: "ADD BETTER SUCCESS MESSAGE HERE...",
+        errorMessage: "Failed to start game",
+      },
+    );
+  };
 
   const updateMembersDoc = async (
     gameId: string,
-    memberId: string, 
+    memberId: string,
     updates: any,
   ) => {
     return gameAsync.execute(
       async () => {
         updateDoc(doc(db, "games", gameId, "members", memberId), {
-          ...updates, 
+          ...updates,
         });
       },
       {
@@ -141,8 +144,10 @@ export function useFirestoreFunctions() {
     );
   };
 
-
-  const watchGameDetails = (gameId: string, onUpdate: (gameDetails: any) => void) => {
+  const watchGameDetails = (
+    gameId: string,
+    onUpdate: (gameDetails: any) => void,
+  ) => {
     const unsubscribe = onSnapshot(
       doc(db, "games", gameId),
       (docSnapshot) => {
@@ -152,7 +157,7 @@ export function useFirestoreFunctions() {
           setWinnerID(data.winner);
           setWinnerName(data.winnerName || "");
           setGameEnded(data.gameEnded || false);
-          
+
           if (user) {
             setTurn(data.currentTurn === user.uid);
           }
@@ -162,12 +167,15 @@ export function useFirestoreFunctions() {
       (error) => {
         toast.error(`Error fetching game details: ${error.message}`);
         console.error("Error fetching game details:", error);
-      }
+      },
     );
     return unsubscribe;
   };
 
-    const watchGameMembers = (gameId: string, onUpdate: (members: any[]) => void) => {
+  const watchGameMembers = (
+    gameId: string,
+    onUpdate: (members: any[]) => void,
+  ) => {
     const membersUnsubscribe = onSnapshot(
       collection(db, "games", gameId, "members"),
       (snapshot) => {
@@ -180,7 +188,7 @@ export function useFirestoreFunctions() {
       (error) => {
         toast.error(`Error fetching game members: ${error.message}`);
         console.error("Error fetching game members:", error);
-      }
+      },
     );
     let cardsUnsubscribe = () => {};
     if (user) {
@@ -195,10 +203,10 @@ export function useFirestoreFunctions() {
         (error) => {
           toast.error(`Error fetching player cards: ${error.message}`);
           console.error("Error fetching player cards:", error);
-        }
+        },
       );
     }
-    
+
     return () => {
       membersUnsubscribe();
       cardsUnsubscribe();
@@ -212,7 +220,8 @@ export function useFirestoreFunctions() {
         throw new Error("Game not found");
       }
       const gameData = gameDoc.data();
-      const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState } = gameData;
+      const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState } =
+        gameData;
 
       return {
         deck,
@@ -220,12 +229,10 @@ export function useFirestoreFunctions() {
         turnOrder,
         turnIndex,
         playerCount,
-        gameState
+        gameState,
       };
     });
   };
-
-
 
   return {
     watchGameDetails,

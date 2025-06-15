@@ -14,13 +14,9 @@ const Game = () => {
 
   useEffect(() => {
     if (gameId && user) {
-      const unsubscribe = watchGameMembers(gameId, (updatedCards) => {
-      });
-      const unsubscribeGameState = watchGameDetails(gameId, (state) => {
-      });
-      const unsubscribeGameTurn = watchGameDetails(gameId, (details) => {
-      });
-
+      const unsubscribe = watchGameMembers(gameId, (updatedCards) => {});
+      const unsubscribeGameState = watchGameDetails(gameId, (state) => {});
+      const unsubscribeGameTurn = watchGameDetails(gameId, (details) => {});
 
       return () => {
         if (unsubscribe) unsubscribe();
@@ -30,7 +26,7 @@ const Game = () => {
     }
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     if (gameEnded) {
       navigate(`/winner`);
     }

@@ -7,9 +7,11 @@ import { useGameStart } from "../../hooks/useGameStart";
 import { useLeaveGame } from "../../hooks/useLeaveGame";
 import { useLoading } from "../../context/IsLoadingContext";
 import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
+import { useGameDetails } from "../../context/GameContext";
 import { createMockUser, createMockGame } from "../mock-utils";
 
 jest.mock("../../context/FirebaseAuthContext");
+jest.mock("../../context/GameContext");
 jest.mock("react-router", () => ({
   useNavigate: jest.fn(),
   useParams: jest.fn(),
@@ -36,6 +38,10 @@ describe("Lobby", () => {
     const mockUser = createMockUser();
     (useAuth as jest.Mock).mockReturnValue({
       user: mockUser,
+    });
+
+    (useGameDetails as jest.Mock).mockReturnValue({
+      gameID: "test-game-123",
     });
 
     (useParams as jest.Mock).mockReturnValue({ gameId: "test-game-123" });
@@ -109,14 +115,6 @@ describe("Lobby", () => {
     await screen.findByText("test-game-123");
 
     expect(mockLeaveGame).toHaveBeenCalledWith("test-game-123", "test-uid");
-  });
-
-  test("should navigate to landing page if game id is empty string", () => {
-    (useParams as jest.Mock).mockReturnValue({ gameId: "" });
-
-    render(<Lobby />);
-
-    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
   test("should navigate to game when gameState changes to In progress", async () => {

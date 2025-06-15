@@ -12,8 +12,6 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useGameDetails } from "../context/GameContext";
-import useAsyncFunction from "./useAsyncFunction";
-import toast from "react-hot-toast";
 
 export function useFirestoreFunctions() {
   const { user } = useAuth();
@@ -25,104 +23,49 @@ export function useFirestoreFunctions() {
     setWinnerID,
     setGameEnded,
     setWinnerName,
+    setGameID,
   } = useGameDetails();
 
-  const gameAsync = useAsyncFunction<any>();
-
   const createGameDoc = async (gameData: any) => {
-    return gameAsync.execute(
-      async () => {
-        return await addDoc(collection(db, "games"), gameData);
-      },
-      {
-        loadingMessage: "Creating game...",
-        successMessage: "Game created successfully!",
-        errorMessage: "Failed to create game",
-      },
-    );
+    return await addDoc(collection(db, "games"), gameData);
   };
 
   const setGameDoc = async (gameId: string, uid: string, gameData: any) => {
-    return gameAsync.execute(
-      async () => {
-        await setDoc(doc(db, "games", gameId, "members", uid), gameData);
-      },
-      {
-        loadingMessage: "Creating game...",
-        successMessage: "Game created successfully!",
-        errorMessage: "Failed to create game",
-      },
-    );
+    await setDoc(doc(db, "games", gameId, "members", uid), gameData);
   };
 
   const deleteMemberDoc = async (gameId: string, memberId: string) => {
-    return gameAsync.execute(
-      async () => {
-        await deleteDoc(doc(db, "games", gameId, "members", memberId));
-      },
-      {
-        loadingMessage: "Leaving game...",
-        successMessage: "Left game successfully!",
-        errorMessage: "Failed to leave game",
-      },
-    );
+    await deleteDoc(doc(db, "games", gameId, "members", memberId));
   };
 
   const getMembers = async (gameId: string) => {
-    return gameAsync.execute(
-      async () => {
-        const membersSnapshot = await getDocs(
-          collection(db, "games", gameId, "members"),
-        );
-        const members = membersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          displayName: doc.data().displayName,
-          ...doc.data(),
-        }));
-        return members;
-      },
-      {
-        loadingMessage: "Fetching game members...",
-        successMessage: "Game members fetched successfully!",
-        errorMessage: "Failed to fetch game members",
-      },
+    const membersSnapshot = await getDocs(
+      collection(db, "games", gameId, "members"),
     );
+    const members = membersSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      displayName: doc.data().displayName,
+      ...doc.data(),
+    }));
+    return members;
   };
 
   const getMember = async (gameId: string, memberID: string) => {
-    return gameAsync.execute(
-      async () => {
-        const memberDoc = await getDoc(
-          doc(db, "games", gameId, "members", memberID),
-        );
-
-        if (!memberDoc.exists()) {
-          throw new Error("Member not found");
-        }
-
-        return {
-          ...memberDoc.data(),
-        };
-      },
-      {
-        loadingMessage: "Fetching game member...",
-        successMessage: "Game member fetched successfully!",
-        errorMessage: "Failed to fetch game members",
-      },
+    const memberDoc = await getDoc(
+      doc(db, "games", gameId, "members", memberID),
     );
+
+    if (!memberDoc.exists()) {
+      throw new Error("Member not found");
+    }
+
+    return {
+      ...memberDoc.data(),
+    };
   };
 
   const updateGameDoc = async (gameId: string, updates: any) => {
-    return gameAsync.execute(
-      async () => {
-        updateDoc(doc(db, "games", gameId), updates);
-      },
-      {
-        loadingMessage: "ADD BETTER LOADING MESSAGE HERE...",
-        successMessage: "ADD BETTER SUCCESS MESSAGE HERE...",
-        errorMessage: "Failed to start game",
-      },
-    );
+    await updateDoc(doc(db, "games", gameId), updates);
   };
 
   const updateMembersDoc = async (
@@ -130,18 +73,9 @@ export function useFirestoreFunctions() {
     memberId: string,
     updates: any,
   ) => {
-    return gameAsync.execute(
-      async () => {
-        updateDoc(doc(db, "games", gameId, "members", memberId), {
-          ...updates,
-        });
-      },
-      {
-        loadingMessage: "Dealing cards...",
-        successMessage: "Cards dealt successfully!",
-        errorMessage: "Failed to deal cards",
-      },
-    );
+    await updateDoc(doc(db, "games", gameId, "members", memberId), {
+      ...updates,
+    });
   };
 
   const watchGameDetails = (
@@ -157,6 +91,7 @@ export function useFirestoreFunctions() {
           setWinnerID(data.winner);
           setWinnerName(data.winnerName || "");
           setGameEnded(data.gameEnded || false);
+          setGameID(docSnapshot.id);
 
           if (user) {
             setTurn(data.currentTurn === user.uid);
@@ -165,8 +100,8 @@ export function useFirestoreFunctions() {
         }
       },
       (error) => {
-        toast.error(`Error fetching game details: ${error.message}`);
         console.error("Error fetching game details:", error);
+        throw error;
       },
     );
     return unsubscribe;
@@ -186,8 +121,8 @@ export function useFirestoreFunctions() {
         onUpdate(members);
       },
       (error) => {
-        toast.error(`Error fetching game members: ${error.message}`);
         console.error("Error fetching game members:", error);
+        throw error;
       },
     );
     let cardsUnsubscribe = () => {};
@@ -201,8 +136,8 @@ export function useFirestoreFunctions() {
           }
         },
         (error) => {
-          toast.error(`Error fetching player cards: ${error.message}`);
           console.error("Error fetching player cards:", error);
+          throw error;
         },
       );
     }
@@ -214,24 +149,23 @@ export function useFirestoreFunctions() {
   };
 
   const getGameDetails = async (gameId: string) => {
-    return gameAsync.execute(async () => {
-      const gameDoc = await getDoc(doc(db, "games", gameId || gameID));
-      if (!gameDoc.exists()) {
-        throw new Error("Game not found");
-      }
-      const gameData = gameDoc.data();
-      const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState } =
-        gameData;
+    const gameDoc = await getDoc(doc(db, "games", gameId || gameID));
+    if (!gameDoc.exists()) {
+      throw new Error("Game not found");
+    }
+    const gameData = gameDoc.data();
+    const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState, ownerUID } =
+      gameData;
 
-      return {
-        deck,
-        deckIndex,
-        turnOrder,
-        turnIndex,
-        playerCount,
-        gameState,
-      };
-    });
+    return {
+      deck,
+      deckIndex,
+      turnOrder,
+      turnIndex,
+      playerCount,
+      gameState,
+      ownerUID,
+    };
   };
 
   return {

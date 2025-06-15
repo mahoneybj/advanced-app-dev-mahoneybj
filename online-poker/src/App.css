@@ -399,3 +399,81 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Winner page styling */
+.winner-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.winner-title {
+  font-size: 2.5rem;
+  color: #334;
+  margin-bottom: 1.5rem;
+}
+
+.winner-card {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #334;
+}
+
+.winner-card h2 {
+  font-size: 2rem;
+  color: #334;
+  margin: 0;
+}
+
+.winner-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.home-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #334;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.home-btn:hover {
+  background-color: #445;
+  transform: translateY(-2px);
+}
+
+.home-btn:active {
+  transform: translateY(1px);
+}
+
+/* Responsive design for winner page */
+@media (max-width: 768px) {
+  .winner-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .winner-title {
+    font-size: 2rem;
+  }
+  
+  .winner-card h2 {
+    font-size: 1.5rem;
+  }
+  
+  .winner-card {
+    padding: 1.5rem;
+  }
+}

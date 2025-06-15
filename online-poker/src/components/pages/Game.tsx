@@ -4,6 +4,7 @@ import { useAuth } from "../../context/FirebaseAuthContext";
 import { useParams, useNavigate } from "react-router";
 import { useEffect } from "react";
 import CardsList from "../CardsList";
+import toast from "react-hot-toast";
 
 const Game = () => {
   const { watchGameDetails, watchGameMembers } = useFirestoreFunctions();
@@ -12,11 +13,12 @@ const Game = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+
   useEffect(() => {
     if (gameId && user) {
-      const unsubscribe = watchGameMembers(gameId, (updatedCards) => {});
-      const unsubscribeGameState = watchGameDetails(gameId, (state) => {});
-      const unsubscribeGameTurn = watchGameDetails(gameId, (details) => {});
+      const unsubscribe = watchGameMembers(gameId, () => {});
+      const unsubscribeGameState = watchGameDetails(gameId, () => {});
+      const unsubscribeGameTurn = watchGameDetails(gameId, () => {});
 
       return () => {
         if (unsubscribe) unsubscribe();
@@ -28,7 +30,12 @@ const Game = () => {
 
   useEffect(() => {
     if (gameEnded) {
+      const timer = setTimeout(() => {
+        toast('Calculating winner 🏅', {icon: '🧐'});
+      }, 6000);
       navigate(`/winner`);
+
+      return () => clearTimeout(timer);
     }
   }, [gameEnded, navigate]);
 

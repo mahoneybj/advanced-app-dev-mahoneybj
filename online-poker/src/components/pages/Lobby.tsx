@@ -17,6 +17,7 @@ const Lobby = () => {
   const handleLeaveGame = async () => {
     if (gameId && user?.uid) {
       await leaveGame(gameId, user.uid);
+      navigate(`/`);
     }
   };
 
@@ -28,12 +29,6 @@ const Lobby = () => {
       }
     }
   };
-
-  useEffect(() => {
-    if (!gameId) {
-      navigate(`/`);
-    }
-  }, [gameId, navigate]);
 
   useEffect(() => {
     if (gameId) {

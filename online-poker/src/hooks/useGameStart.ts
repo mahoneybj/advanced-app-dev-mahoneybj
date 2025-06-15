@@ -46,7 +46,7 @@ export const useGameStart = () => {
     setGameState(`${firstPlayerName}'s turn`);
 
     // Return updated game data and members
-    const updatedGameData = {
+    const updatedGameData: GameData = {
       ...gameData,
       ...gameUpdates,
     };

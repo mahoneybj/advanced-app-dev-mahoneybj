@@ -3,11 +3,13 @@ import { useAuth } from "../context/FirebaseAuthContext";
 import { useGameDetails } from "../context/GameContext";
 import { increment } from "firebase/firestore";
 import toast from "react-hot-toast";
+import useAsyncFunction from "./useAsyncFunction";
+
 
 export const useGameJoin = () => {
   const { setGameDoc, updateGameDoc, getGameDetails } = useFirestoreFunctions();
   const { user } = useAuth();
-  const { setGameID } = useGameDetails();
+  const gameAsync = useAsyncFunction<any>();
 
   const processGameJoin = async (gameId: string) => {
     if (!user) {
@@ -33,13 +35,21 @@ export const useGameJoin = () => {
       displayName: user?.displayName || "Anonymous Player",
     };
 
-    await setGameDoc(gameId, user.uid, memberFields);
-    setGameID(gameId);
+    await gameAsync.execute(
+      async () => {
+        await setGameDoc(gameId, user.uid, memberFields);
+        const gameUpdate = {
+          playerCount: increment(1),
+        };
+        await updateGameDoc(gameId, gameUpdate);
+      },
+      {
+        loadingMessage: "Joining game...",
+        successMessage: "Game joined successfully!",
+        errorMessage: "Failed to join game",
+      }
+    );
 
-    const gameUpdate = {
-      playerCount: increment(1),
-    };
-    await updateGameDoc(gameId, gameUpdate);
     return gameId;
   };
 

@@ -4,9 +4,11 @@
  */
 export default function calculateWinner(playerCards: string[][]): {
   winnerIndex: number;
+  specialHand: string;
 } {
   let highestRank = -1;
   let winnerIndex = 0;
+  let specialHand = "";
 
   // Iterate through each player's hand to find the highest ranking hand
   for (let playerIndex = 0; playerIndex < playerCards.length; playerIndex++) {
@@ -14,13 +16,14 @@ export default function calculateWinner(playerCards: string[][]): {
     const currentHandRank = evaluateHand(cards);
 
     // Update winner if current hand has higher rank
-    if (currentHandRank > highestRank) {
-      highestRank = currentHandRank;
+    if (currentHandRank[0] > highestRank) {
+      highestRank = currentHandRank[0];
       winnerIndex = playerIndex;
+      specialHand = currentHandRank[1];
     }
   }
 
-  return { winnerIndex };
+  return { winnerIndex, specialHand };
 }
 
 /**
@@ -29,7 +32,7 @@ export default function calculateWinner(playerCards: string[][]): {
  * Checks for special hands following poker rules
  * if no special hand, returns highest card value divided by 15 to keep value < 1
  */
-function evaluateHand(cards: string[]): number {
+function evaluateHand(cards: string[]): [number, string] {
   const suits: string[] = [];
   const values: number[] = [];
   
@@ -54,16 +57,16 @@ function evaluateHand(cards: string[]): number {
   values.sort((a, b) => b - a);
 
   // Check for each special hand
-  if (isRoyalFlush(suits, values)) return 9;
-  if (isStraightFlush(suits, values)) return 8;
-  if (isFourOfAKind(values)) return 7;
-  if (isFullHouse(values)) return 6;
-  if (isFlush(suits)) return 5;
-  if (isStraight(values)) return 4;
-  if (isThreeOfAKind(values)) return 3;
-  if (isTwoPair(values)) return 2;
-  if (isPair(values)) return 1;
-  
+  if (isRoyalFlush(suits, values)) return [9, 'Royal Flush'];
+  if (isStraightFlush(suits, values)) return [8, 'Straight Flush'];
+  if (isFourOfAKind(values)) return [7, 'Four of a Kind'];
+  if (isFullHouse(values)) return [6, 'Full House'];
+  if (isFlush(suits)) return [5, 'Flush'];
+  if (isStraight(values)) return [4, 'Straight'];
+  if (isThreeOfAKind(values)) return [3, 'Three of a Kind'];
+  if (isTwoPair(values)) return [2, 'Two Pair'];
+  if (isPair(values)) return [1, 'One Pair'];
+
   // If no special hand will get highest card
   return highCard(values);
 }
@@ -144,6 +147,6 @@ function countOccurrences(arr: number[]): Record<number, number> {
 }
 
 // Returns the highest card value in the hand divided by 15 to return value less than 1
-function highCard(values: number[]): number {
-  return (values[0]/15); // Array sorted for highest card first
+function highCard(values: number[]): [number, string] {
+  return [(values[0]/15), 'High Card']; // Array sorted for highest card first
 }

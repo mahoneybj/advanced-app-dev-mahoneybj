@@ -30,6 +30,7 @@ const useWinnerHandling = () => {
 
       const winnerName = playerNames[winnerIndex];
       const winnerId = playerIds[winnerIndex];
+      
 
       await updateGameDoc(gameId, {
         gameState: `Game ended. ${winnerName} wins!`,

@@ -26,20 +26,22 @@ const useWinnerHandling = () => {
       );
       const playerIds = members.map((member: GameMember) => member.id);
 
-      const { winnerIndex } = calculateWinner(playerCards);
+      const { winnerIndex, winningSpecialHand, allHands } = calculateWinner(playerCards);
 
       const winnerName = playerNames[winnerIndex];
       const winnerId = playerIds[winnerIndex];
-      
+
 
       await updateGameDoc(gameId, {
-        gameState: `Game ended. ${winnerName} wins!`,
+        gameState: `Game ended. ${winnerName} wins with ${winningSpecialHand}!`,
         winner: winnerId,
         winnerName: winnerName,
+        winnerSpecialHand: winningSpecialHand,
+        allHands: allHands,
         gameEnded: true,
       });
 
-      setGameState(`Game ended. ${winnerName} wins!`);
+      setGameState(`Game ended. ${winnerName} wins with ${winningSpecialHand}!`);
     } catch (error) {
       toast.error("Failed to determine the winner");
     }

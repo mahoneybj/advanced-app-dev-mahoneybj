@@ -29,10 +29,10 @@ const Game = () => {
 
   useEffect(() => {
     if (gameEnded) {
+      toast("Calculating winner 🏅", { icon: "🧐" });
       const timer = setTimeout(() => {
-        toast("Calculating winner 🏅", { icon: "🧐" });
+        navigate(`/winner`); 
       }, 6000);
-      navigate(`/winner`);
 
       return () => clearTimeout(timer);
     }

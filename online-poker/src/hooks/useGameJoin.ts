@@ -5,7 +5,6 @@ import { increment } from "firebase/firestore";
 import toast from "react-hot-toast";
 import useAsyncFunction from "./useAsyncFunction";
 
-
 export const useGameJoin = () => {
   const { setGameDoc, updateGameDoc, getGameDetails } = useFirestoreFunctions();
   const { user } = useAuth();
@@ -47,7 +46,7 @@ export const useGameJoin = () => {
         loadingMessage: "Joining game...",
         successMessage: "Game joined successfully!",
         errorMessage: "Failed to join game",
-      }
+      },
     );
 
     return gameId;

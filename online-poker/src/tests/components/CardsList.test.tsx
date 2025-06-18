@@ -11,24 +11,25 @@ jest.mock("react-router", () => ({
   useParams: jest.fn(),
 }));
 jest.mock("../../components/Card", () => {
-  return function MockCard({ 
-    card, 
-    isSelected, 
-    onSelect, 
-    turn 
-  }: { 
-    card: string; 
-    isSelected: boolean; 
+  return function MockCard({
+    card,
+    isSelected,
+    onSelect,
+    turn,
+  }: {
+    card: string;
+    isSelected: boolean;
     onSelect: (card: string, isSelected: boolean) => void;
     turn: boolean;
   }) {
     return (
-      <div 
+      <div
         data-testid={`card-${card}`}
         onClick={() => onSelect(card, !isSelected)}
         className={isSelected ? "selected" : ""}
       >
-        {card} - {isSelected ? "Selected" : "Not Selected"} - Turn: {turn.toString()}
+        {card} - {isSelected ? "Selected" : "Not Selected"} - Turn:{" "}
+        {turn.toString()}
       </div>
     );
   };
@@ -66,7 +67,9 @@ describe("CardsList Component", () => {
     render(<CardsList />);
 
     mockCards.forEach((card) => {
-      expect(screen.getByText(new RegExp(`${card}.*Not Selected.*Turn: true`))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(`${card}.*Not Selected.*Turn: true`)),
+      ).toBeInTheDocument();
     });
   });
 
@@ -115,14 +118,16 @@ describe("CardsList Component", () => {
     render(<CardsList />);
 
     const firstCard = screen.getByTestId("card-2H");
-    
+
     // Select
     fireEvent.click(firstCard);
     expect(screen.getByText("2H - Selected - Turn: true")).toBeInTheDocument();
 
     // Unselect
     fireEvent.click(firstCard);
-    expect(screen.getByText("2H - Not Selected - Turn: true")).toBeInTheDocument();
+    expect(
+      screen.getByText("2H - Not Selected - Turn: true"),
+    ).toBeInTheDocument();
   });
 
   test("should call processGameTurnHandling with selected cards when exchange button is clicked", () => {
@@ -137,7 +142,10 @@ describe("CardsList Component", () => {
     const exchangeButton = screen.getByText("Exchange Cards");
     fireEvent.click(exchangeButton);
 
-    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith("test-game-123", ["2H", "3S"]);
+    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith("test-game-123", [
+      "2H",
+      "3S",
+    ]);
   });
 
   test("should call processGameTurnHandling with empty array when no cards selected", () => {
@@ -146,7 +154,10 @@ describe("CardsList Component", () => {
     const exchangeButton = screen.getByText("Exchange Cards");
     fireEvent.click(exchangeButton);
 
-    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith("test-game-123", []);
+    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith(
+      "test-game-123",
+      [],
+    );
   });
 
   test("should not call processGameTurnHandling when gameId is missing", () => {
@@ -169,7 +180,9 @@ describe("CardsList Component", () => {
     render(<CardsList />);
 
     mockCards.forEach((card) => {
-      expect(screen.getByText(new RegExp(`${card}.*Turn: false`))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(`${card}.*Turn: false`)),
+      ).toBeInTheDocument();
     });
   });
 
@@ -199,13 +212,18 @@ describe("CardsList Component", () => {
 
     // All cards should be selected
     mockCards.forEach((card) => {
-      expect(screen.getByText(new RegExp(`${card}.*Selected`))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(`${card}.*Selected`)),
+      ).toBeInTheDocument();
     });
 
     // Should exchange all cards
     const exchangeButton = screen.getByText("Exchange Cards");
     fireEvent.click(exchangeButton);
 
-    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith("test-game-123", mockCards);
+    expect(mockProcessGameTurnHandling).toHaveBeenCalledWith(
+      "test-game-123",
+      mockCards,
+    );
   });
 });

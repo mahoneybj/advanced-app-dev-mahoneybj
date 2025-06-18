@@ -10,7 +10,6 @@ export const useCreateGame = () => {
   const { setGameID } = useGameDetails();
   const gameAsync = useAsyncFunction<any>();
 
-
   const processGameCreate = async (ownerUID: string) => {
     const deck = deckShuffle();
     const gameFields = {
@@ -32,7 +31,7 @@ export const useCreateGame = () => {
         loadingMessage: "Creating game...",
         successMessage: "Game created successfully!",
         errorMessage: "Failed to create game",
-      }
+      },
     );
 
     const gameId = docRef.id;

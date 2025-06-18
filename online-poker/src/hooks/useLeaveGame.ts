@@ -22,7 +22,7 @@ export function useLeaveGame() {
         loadingMessage: "Leaving game...",
         successMessage: "Left game successfully!",
         errorMessage: "Failed to leave game",
-      }
+      },
     );
     setGameID("");
   };

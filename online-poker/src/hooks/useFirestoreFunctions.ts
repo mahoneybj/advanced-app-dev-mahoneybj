@@ -154,8 +154,15 @@ export function useFirestoreFunctions() {
       throw new Error("Game not found");
     }
     const gameData = gameDoc.data();
-    const { deck, deckIndex, turnOrder, turnIndex, playerCount, gameState, ownerUID } =
-      gameData;
+    const {
+      deck,
+      deckIndex,
+      turnOrder,
+      turnIndex,
+      playerCount,
+      gameState,
+      ownerUID,
+    } = gameData;
 
     return {
       deck,

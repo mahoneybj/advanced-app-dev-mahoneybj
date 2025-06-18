@@ -13,7 +13,6 @@ const Game = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-
   useEffect(() => {
     if (gameId && user) {
       const unsubscribe = watchGameMembers(gameId, () => {});
@@ -31,7 +30,7 @@ const Game = () => {
   useEffect(() => {
     if (gameEnded) {
       const timer = setTimeout(() => {
-        toast('Calculating winner 🏅', {icon: '🧐'});
+        toast("Calculating winner 🏅", { icon: "🧐" });
       }, 6000);
       navigate(`/winner`);
 

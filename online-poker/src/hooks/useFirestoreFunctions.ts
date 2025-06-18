@@ -24,6 +24,7 @@ export function useFirestoreFunctions() {
     setGameEnded,
     setWinnerName,
     setGameID,
+    setPlayerCount,
   } = useGameDetails();
 
   const createGameDoc = async (gameData: any) => {
@@ -92,7 +93,8 @@ export function useFirestoreFunctions() {
           setWinnerName(data.winnerName || "");
           setGameEnded(data.gameEnded || false);
           setGameID(docSnapshot.id);
-
+          setPlayerCount(data.playerCount || 0);
+          
           if (user) {
             setTurn(data.currentTurn === user.uid);
           }

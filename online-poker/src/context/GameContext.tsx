@@ -8,6 +8,8 @@ interface GameContextProps {
   winnerName: string;
   winnerID: string;
   gameEnded: boolean;
+  playerCount: number;
+  setPlayerCount: (count: number) => void;
   setGameID: (gameID: string) => void;
   setGameState: (gameState: string) => void;
   setCards: (cards: string[]) => void;
@@ -28,6 +30,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [winnerName, setWinnerName] = useState<string>("");
   const [winnerID, setWinnerID] = useState<string>("");
   const [gameEnded, setGameEnded] = useState<boolean>(false);
+  const [playerCount, setPlayerCount] = useState<number>(0);
 
   const resetGame = () => {
     setGameID("");
@@ -37,6 +40,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setWinnerName("");
     setWinnerID("");
     setGameEnded(false);
+    setPlayerCount(0);
   };
 
   return (
@@ -49,6 +53,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         winnerName,
         winnerID,
         gameEnded,
+        playerCount,
         setGameID,
         setGameState,
         setCards,
@@ -56,6 +61,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setWinnerName,
         setWinnerID,
         setGameEnded,
+        setPlayerCount,
         resetGame,
       }}
     >

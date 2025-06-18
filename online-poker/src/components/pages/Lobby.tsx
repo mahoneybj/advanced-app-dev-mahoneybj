@@ -5,6 +5,7 @@ import { useLeaveGame } from "../../hooks/useLeaveGame";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useAuth } from "../../context/FirebaseAuthContext";
+import { useGameDetails } from "../../context/GameContext";
 
 const Lobby = () => {
   const { watchGameDetails } = useFirestoreFunctions();
@@ -13,6 +14,7 @@ const Lobby = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { playerCount } = useGameDetails();
 
   const handleLeaveGame = async () => {
     if (gameId && user?.uid) {
@@ -36,6 +38,7 @@ const Lobby = () => {
         if (gameDetails.gameState !== "Waiting") {
           navigate(`/game/${gameId}`);
         }
+
       });
       return () => unsub();
     }
@@ -58,9 +61,13 @@ const Lobby = () => {
         <PlayerList gameID={gameId} />
       </div>
       <div className="game-start">
-        <button className="Game-start-btn" onClick={handleGameStart}>
-          Start Game
-        </button>
+        {playerCount > 1 ? (
+          <button className="Game-start-btn" onClick={handleGameStart}>
+            Start Game
+          </button>
+        ) : (
+          <p className="waiting-message">Waiting for more players to join...</p>
+        )}
       </div>
     </div>
   );

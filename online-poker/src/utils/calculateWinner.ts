@@ -5,15 +5,24 @@
 export default function calculateWinner(playerCards: string[][]): {
   winnerIndex: number;
   specialHand: string;
+  allHands: { playerIndex: number; rank: number; handType: string }[];
 } {
   let highestRank = -1;
   let winnerIndex = 0;
   let specialHand = "";
+  const allHands: { playerIndex: number; rank: number; handType: string }[] = [];
 
-  // Iterate through each player's hand to find the highest ranking hand
+  // Iterate through each hand to find the highest ranking hand
   for (let playerIndex = 0; playerIndex < playerCards.length; playerIndex++) {
     const cards = playerCards[playerIndex];
     const currentHandRank = evaluateHand(cards);
+
+    // Store all hand information for later display in winner
+    allHands.push({
+      playerIndex,
+      rank: currentHandRank[0],
+      handType: currentHandRank[1]
+    });
 
     // Update winner if current hand has higher rank
     if (currentHandRank[0] > highestRank) {
@@ -23,7 +32,10 @@ export default function calculateWinner(playerCards: string[][]): {
     }
   }
 
-  return { winnerIndex, specialHand };
+  // Sort allHands by rank (highest first) to make it easier to display in winner component
+  allHands.sort((a, b) => b.rank - a.rank);
+
+  return { winnerIndex, specialHand, allHands };
 }
 
 /**

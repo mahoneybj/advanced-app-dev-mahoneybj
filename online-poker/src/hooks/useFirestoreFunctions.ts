@@ -25,6 +25,8 @@ export function useFirestoreFunctions() {
     setWinnerName,
     setGameID,
     setPlayerCount,
+    setAllHands,
+    setWinnerSpecialHand,
   } = useGameDetails();
 
   const createGameDoc = async (gameData: any) => {
@@ -94,7 +96,8 @@ export function useFirestoreFunctions() {
           setGameEnded(data.gameEnded || false);
           setGameID(docSnapshot.id);
           setPlayerCount(data.playerCount || 0);
-          
+          setAllHands(data.allHands || []);
+          setWinnerSpecialHand(data.winnerSpecialHand || "");
 
           if (user) {
             setTurn(data.currentTurn === user.uid);

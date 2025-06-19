@@ -11,8 +11,11 @@ jest.mock("react-router", () => ({
 }));
 jest.mock("../../context/GameContext");
 
+
+
 describe("Winner Page", () => {
       const mockNavigate = jest.fn();
+      const mockHandleReturnToHome = jest.fn();
     
   beforeEach(() => {
     jest.clearAllMocks();
@@ -25,6 +28,7 @@ describe("Winner Page", () => {
             { playerName: "Player 1", rank: 9, handType: "Royal Flush", hand: ["AS", "KS", "QS", "JS", "TS"], playerIndex: 0 },
             { playerName: "Player 2", rank: 3, handType: "Pair", hand: ["2H", "2D", "3C", "4S", "5H"], playerIndex: 1 },
         ],
+    resetGame: jest.fn(),
     });
   });
 
@@ -63,6 +67,19 @@ describe("Winner Page", () => {
 
         const returnButton = screen.getByText("Return to Home");
         expect(returnButton).toBeInTheDocument();
+    });
+  });
+
+  describe("Navigation", () => {
+    test("should navigate to home on return button click", async () => {
+      render(<Winner />);
+
+      const returnButton = screen.getByText("Return to Home");
+      returnButton.click();
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith("/");
+      });
     });
   });
 });

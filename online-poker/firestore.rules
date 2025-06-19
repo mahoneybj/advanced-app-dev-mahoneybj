@@ -14,7 +14,7 @@ service cloud.firestore {
       }
       
       match /games/{gameId}/members/{playerUID} {
-        allow read, create, update, delete: if request.auth != null; // Full access
+        allow read, create, update, delete: if request.auth != null; 
 
       }
 

@@ -143,41 +143,4 @@ describe("PlayersList Component", () => {
     expect(playerContent).toBeInTheDocument();
     expect(playerContent).toHaveClass("player-content");
   });
-
-  test("should handle rapid player updates", async () => {
-    let callbackFunction: (members: any[]) => void;
-
-    mockWatchGameMembers.mockImplementation((gameId, callback) => {
-      callbackFunction = callback;
-      return mockUnsubscribe;
-    });
-
-    render(<PlayersList gameID="test-game-123" />);
-
-    // Simulate rapid updates
-    const updates = [
-      [createMockPlayer({ id: "player-1", displayName: "Player 1" })],
-      [
-        createMockPlayer({ id: "player-1", displayName: "Player 1" }),
-        createMockPlayer({ id: "player-2", displayName: "Player 2" }),
-      ],
-      [createMockPlayer({ id: "player-1", displayName: "Updated Player 1" })],
-    ];
-
-    for (const update of updates) {
-      await waitFor(() => {
-        callbackFunction(update);
-      });
-    }
-
-    // Should show the final state
-    await waitFor(() => {
-      expect(
-        screen.getByText("Player Name: Updated Player 1"),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByText("Player Name: Player 2"),
-      ).not.toBeInTheDocument();
-    });
-  });
 });

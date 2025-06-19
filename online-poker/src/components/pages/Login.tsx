@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/FirebaseAuthContext";
 import { useFirebaseAuth } from "../../hooks/useFirebaseAuth";
 import { useNavigate } from "react-router";
+import { useLoading } from "../../context/IsLoadingContext";
+
 
 const Login = () => {
   const { user } = useAuth();
@@ -18,6 +20,7 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { setIsLoading } = useLoading();
 
   const handleAnonymousLogin = async () => {
     await signInAnonymous(username);
@@ -74,6 +77,7 @@ const Login = () => {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         className="login-input"
+        disabled={isLoading}
       />
       <button
         onClick={handleAnonymousLogin}
@@ -97,6 +101,7 @@ const Login = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="login-input"
+          disabled={isLoading}
         />
         <input
           type="password"
@@ -104,6 +109,7 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="login-input"
+          disabled={isLoading}
         />
         <button
           onClick={handleEmailLoginOrRegister}
@@ -115,6 +121,7 @@ const Login = () => {
         <button
           onClick={() => setIsRegister(!isRegister)}
           className="toggle-button"
+          disabled={isLoading}
         >
           Switch to {isRegister ? "Login" : "Register"}
         </button>

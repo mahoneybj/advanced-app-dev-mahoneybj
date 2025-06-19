@@ -14,7 +14,7 @@ const Lobby = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { playerCount } = useGameDetails();
+  const { playerCount, gameState, gameID } = useGameDetails();
 
   const handleLeaveGame = async () => {
     if (gameId && user?.uid) {
@@ -32,7 +32,7 @@ const Lobby = () => {
     }
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (gameId) {
       const unsub = watchGameDetails(gameId, async (gameDetails) => {
         if (gameDetails.gameState !== "Waiting") {
@@ -41,7 +41,13 @@ const Lobby = () => {
       });
       return () => unsub();
     }
-  }, [navigate]);
+  }, [navigate]); */
+
+  useEffect(() => {
+    if (gameID && gameState !== "Waiting") {
+      navigate(`/game/${gameId}`);
+    }
+  }, [navigate, gameID, gameState]);
 
   return (
     <div className="lobby-container">

@@ -13,7 +13,7 @@ const Game = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (gameId && user) {
       const unsubscribe = watchGameMembers(gameId, () => {});
       const unsubscribeGameState = watchGameDetails(gameId, () => {});
@@ -25,13 +25,13 @@ const Game = () => {
         if (unsubscribeGameTurn) unsubscribeGameTurn();
       };
     }
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (gameEnded) {
       toast("Calculating winner 🏅", { icon: "🧐" });
       const timer = setTimeout(() => {
-        navigate(`/winner`);
+        navigate(`/winner/${gameId}`);
       }, 6000);
 
       return () => clearTimeout(timer);

@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { GameProvider } from "./context/GameContext";
 import Game from "./components/pages/Game";
 import Winner from "./components/pages/Winner";
+import GameContextWrapper from "./components/GameContextWrapper";
 
 const App = () => {
   useEffect(() => {
@@ -55,9 +56,11 @@ const App = () => {
             path="/lobby/:gameId"
             element={
               <GameProvider>
-                <ProtectedRoute>
-                  <Lobby />
-                </ProtectedRoute>
+                <GameContextWrapper>
+                  <ProtectedRoute>
+                    <Lobby />
+                  </ProtectedRoute>
+                </GameContextWrapper>
               </GameProvider>
             }
           />
@@ -65,19 +68,23 @@ const App = () => {
             path="/game/:gameId"
             element={
               <GameProvider>
-                <ProtectedRoute>
-                  <Game />
-                </ProtectedRoute>
+                <GameContextWrapper>
+                  <ProtectedRoute>
+                    <Game />
+                  </ProtectedRoute>
+                </GameContextWrapper>
               </GameProvider>
             }
           />
           <Route
-            path="/winner"
+            path="/winner/:gameId"
             element={
               <GameProvider>
-                <ProtectedRoute>
-                  <Winner />
-                </ProtectedRoute>
+                <GameContextWrapper>
+                  <ProtectedRoute>
+                    <Winner />
+                  </ProtectedRoute>
+                </GameContextWrapper>
               </GameProvider>
             }
           />

@@ -1,3 +1,5 @@
+// Shuffles a deck of cards using the card image names for ease in rendering
+// goes through each value appending the suit to the value
 export const deckShuffle = () => {
   const suits = ["H", "D", "C", "S"];
   const values = [

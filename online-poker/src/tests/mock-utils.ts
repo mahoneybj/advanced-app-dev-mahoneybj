@@ -1,3 +1,4 @@
+// Mock util functions for testing in an attempt to reduce code repeating
 export const createMockUser = (overrides = {}) => ({
   uid: "test-uid",
   displayName: "Test User",
@@ -17,31 +18,3 @@ export const createMockPlayer = (overrides = {}) => ({
   ...overrides,
 });
 
-export const mockAllHooks = () => {
-  const mockNavigate = jest.fn();
-  const mockProcessGameCreate = jest.fn();
-  const mockProcessGameJoin = jest.fn();
-  const mockSetGameID = jest.fn();
-  const mockWatchGameDetails = jest.fn();
-  const mockWatchGameMembers = jest.fn();
-
-  require("../context/FirebaseAuthContext").useAuth = jest.fn();
-  require("react-router").useNavigate = jest.fn().mockReturnValue(mockNavigate);
-  require("react-router").useParams = jest
-    .fn()
-    .mockReturnValue({ gameId: "test-game" });
-  require("../hooks/useCreateGame").useCreateGame = jest.fn();
-  require("../hooks/useGameJoin").useGameJoin = jest.fn();
-  require("../context/IsLoadingContext").useLoading = jest.fn();
-  require("../context/GameContext").useGameDetails = jest.fn();
-  require("../hooks/useFirestoreFunctions").useFirestoreFunctions = jest.fn();
-
-  return {
-    mockNavigate,
-    mockProcessGameCreate,
-    mockProcessGameJoin,
-    mockSetGameID,
-    mockWatchGameDetails,
-    mockWatchGameMembers,
-  };
-};

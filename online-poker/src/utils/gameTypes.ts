@@ -1,31 +1,10 @@
-import { FieldValue } from "firebase/firestore";
-
+// Intfaces for gameData and members to stop code repition in hooks
 export interface GameData {
   ownerUID: string;
   deck: string[];
   deckIndex: number;
   gameState: string;
   currentTurn: string;
-  turnOrder: string[];
-  turnIndex: number;
-  playerCount: number;
-}
-
-// This type allows FieldValue for update operations
-export interface GameDataUpdate {
-  ownerUID?: string;
-  deck?: string[];
-  deckIndex?: number;
-  gameState?: string;
-  currentTurn?: string;
-  turnOrder?: string[];
-  turnIndex?: number;
-  playerCount?: number | FieldValue;
-}
-
-export interface GameDataForTurn {
-  deck: string[];
-  deckIndex: number;
   turnOrder: string[];
   turnIndex: number;
   playerCount: number;

@@ -12,6 +12,7 @@ import Winner from "./components/pages/Winner";
 import GameContextWrapper from "./components/GameContextWrapper";
 
 const App = () => {
+  // Alerts user they are on or offline
   useEffect(() => {
     const handleOnline = () => {
       toast("You're back online! Changes will now sync.", {

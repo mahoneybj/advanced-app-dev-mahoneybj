@@ -4,9 +4,11 @@ import CardsList from "../../components/CardsList";
 import { useGameDetails } from "../../context/GameContext";
 import { useGameplayHandling } from "../../hooks/useGameplayHandling";
 import { useParams } from "react-router";
+import { useLoading } from "../../context/IsLoadingContext";
 
 jest.mock("../../context/GameContext");
 jest.mock("../../hooks/useGameplayHandling");
+jest.mock("../../context/IsLoadingContext");
 jest.mock("react-router", () => ({
   useParams: jest.fn(),
 }));
@@ -52,6 +54,9 @@ describe("CardsList Component", () => {
     (useGameplayHandling as jest.Mock).mockReturnValue({
       processGameTurnHandling: mockProcessGameTurnHandling,
     });
+        (useLoading as jest.Mock).mockReturnValue({
+          isLoading: false,
+        });
   });
 
   test("should render all cards correctly", () => {

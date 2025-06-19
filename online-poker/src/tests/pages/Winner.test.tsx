@@ -1,14 +1,15 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import userEvent from "@testing-library/user-event";
 import Winner from "../../components/pages/Winner";
 import { useGameDetails } from "../../context/GameContext";
 import { useNavigate } from "react-router";
+import { useLoading } from "../../context/IsLoadingContext";
 
 jest.mock("react-router", () => ({
   useNavigate: jest.fn(),
 }));
 jest.mock("../../context/GameContext");
+jest.mock("../../context/IsLoadingContext");
 
 describe("Winner Page", () => {
   const mockNavigate = jest.fn();
@@ -17,6 +18,10 @@ describe("Winner Page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
+
+    (useLoading as jest.Mock).mockReturnValue({
+      isLoading: false,
+    });
   });
 
   const defaultMockData = {
@@ -52,7 +57,7 @@ describe("Winner Page", () => {
     test("should display all players' hands", () => {
       render(<Winner />);
   
-      expect(screen.getByText("All Players Hands")).toBeInTheDocument();
+      expect(screen.getByText("All Player's Hand's")).toBeInTheDocument();
       expect(screen.getByText("Player 1")).toBeInTheDocument();
       expect(screen.getByText("Royal Flush")).toBeInTheDocument();
 

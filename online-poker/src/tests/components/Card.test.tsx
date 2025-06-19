@@ -1,6 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Card from "../../components/Card";
+import { useLoading } from "../../context/IsLoadingContext";
+
+jest.mock("../../context/IsLoadingContext");
 
 describe("Card Component", () => {
   const mockOnSelect = jest.fn();
@@ -13,6 +16,10 @@ describe("Card Component", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    (useLoading as jest.Mock).mockReturnValue({
+      isLoading: false,
+    });
   });
 
   test("should render card image with correct src and alt", () => {

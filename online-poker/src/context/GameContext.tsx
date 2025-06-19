@@ -8,11 +8,11 @@ interface GameContextProps {
   winnerName: string;
   winnerID: string;
   winnerSpecialHand: string;
-  allHands: { playerIndex: number; handType: string; hand: string[]; playerName: string}[];
+  allHands: { playerIndex: number; rank: number; handType: string; hand: string[]; playerName: string}[];
   gameEnded: boolean;
   playerCount: number;
   setWinnerSpecialHand: (hand: string) => void;
-  setAllHands: (hands: { playerIndex: number; handType: string; hand: string[]; playerName: string}[]) => void;
+  setAllHands: (hands: { playerIndex: number; rank: number; handType: string; hand: string[]; playerName: string}[]) => void;
   setPlayerCount: (count: number) => void;
   setGameID: (gameID: string) => void;
   setGameState: (gameState: string) => void;
@@ -36,7 +36,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [playerCount, setPlayerCount] = useState<number>(0);
   const [winnerSpecialHand, setWinnerSpecialHand] = useState<string>("");
-  const [allHands, setAllHands] = useState<{ playerIndex: number; handType: string; hand: string[]; playerName: string }[]>([]);
+  const [allHands, setAllHands] = useState<{ playerIndex: number; rank: number; handType: string; hand: string[]; playerName: string }[]>([]);
 
   const resetGame = () => {
     setGameID("");

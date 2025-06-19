@@ -4,12 +4,13 @@ import { useGameDetails } from "../../context/GameContext";
 
 const Winner: React.FC = () => {
   const navigate = useNavigate();
-  const { winnerName, resetGame } = useGameDetails();
+  const { winnerName, winnerSpecialHand, allHands, resetGame } = useGameDetails();
 
   const handleReturnToHome = () => {
     resetGame();
     navigate("/");
   };
+
 
   return (
     <div className="winner-container">

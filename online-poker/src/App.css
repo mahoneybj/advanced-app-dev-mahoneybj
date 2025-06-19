@@ -392,37 +392,151 @@
   font-size: 0.85rem;
 }
 
-/* Card styling */
+/* Game page styling */
+.game {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.game h1 {
+  font-size: 2.5rem;
+  color: #334;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.Game-state {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  border: 2px solid #e5e7eb;
+}
+
+.Game-state h3 {
+  font-size: 1.3rem;
+  color: rgb(32, 32, 43);
+  margin: 0;
+  font-weight: 500;
+}
+
 .Cards-Container {
-  width: 100%;
-  overflow-x: auto;
-  margin: 1rem 0;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 }
 
 .cards-list {
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  padding: 10px;
+  gap: 15px;
+  padding: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .card-container {
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .card-container:hover {
-  transform: translateY(-10px);
+  transform: translateY(-8px) scale(1.02);
 }
 
 .card-image {
-  width: 150px;
+  width: 120px;
   height: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: block;
 }
 
-/* Winner page styling - Clean & Modern */
+.exchange-btn {
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #334;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exchange-btn:hover {
+  background-color: #445;
+  transform: translateY(-1px);
+}
+
+.exchange-btn:active {
+  transform: translateY(0);
+}
+
+.exchange-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive design for game page */
+@media (max-width: 768px) {
+  .game {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .game h1 {
+    font-size: 2rem;
+  }
+
+  .Game-state {
+    padding: 1rem;
+  }
+
+  .Game-state h3 {
+    font-size: 1.1rem;
+  }
+
+  .Cards-Container {
+    padding: 1.5rem;
+  }
+
+  .cards-list {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .card-image {
+    width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .Cards-Container {
+    padding: 1rem;
+  }
+
+  .card-image {
+    width: 80px;
+  }
+}
+
+
+/* Winner page styling */
 .winner-container {
   max-width: 1000px;
   margin: 2rem auto;
@@ -589,31 +703,3 @@
   transform: none;
 }
 
-@media (max-width: 768px) {
-  .winner-container {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-
-  .winner-title {
-    font-size: 2rem;
-  }
-
-  .winner-card h2 {
-    font-size: 1.6rem;
-  }
-
-  .hands-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .player-hand-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .result-card-image {
-    width: 50px;
-  }
-}

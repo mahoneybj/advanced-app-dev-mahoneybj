@@ -12,7 +12,7 @@ import { clientsClaim } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { StaleWhileRevalidate, CacheFirst } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -53,19 +53,39 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + "/index.html"),
 );
 
-// An example runtime caching route for requests that aren't handled by the
-// precache, in this case same-origin .png requests like those from in public/
+// Add caching for SVG card images
+registerRoute(
+  // Cache SVG files from the playing-cards directory
+  ({ url }) =>
+    url.origin === self.location.origin &&
+    url.pathname.includes('/playing-cards/') &&
+    url.pathname.endsWith('.svg'),
+  // Use CacheFirst strategy for card images since they don't change
+  new CacheFirst({
+    cacheName: "card-images",
+    plugins: [
+      // Cache card images for a long time since they're static
+      new ExpirationPlugin({
+        maxEntries: 60, // More than enough for a full deck (52 cards)
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
+  }),
+);
+
+// Update the existing PNG caching to also include SVG files
 registerRoute(
   // Add in any other file extensions or routing criteria as needed.
   ({ url }) =>
-    url.origin === self.location.origin && url.pathname.endsWith(".png"),
+    url.origin === self.location.origin &&
+    (url.pathname.endsWith(".png") || url.pathname.endsWith(".svg")),
   // Customize this strategy as needed, e.g., by changing to CacheFirst.
   new StaleWhileRevalidate({
     cacheName: "images",
     plugins: [
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used images are removed.
-      new ExpirationPlugin({ maxEntries: 50 }),
+      new ExpirationPlugin({ maxEntries: 100 }), // Increased to accommodate SVG files
     ],
   }),
 );

@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router";
 import { useGameStart } from "../../hooks/useGameStart";
 import { useLeaveGame } from "../../hooks/useLeaveGame";
 import { useLoading } from "../../context/IsLoadingContext";
-import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
 import { useGameDetails } from "../../context/GameContext";
 import { createMockUser, createMockGame } from "../mock-utils";
 
@@ -30,7 +29,6 @@ describe("Lobby", () => {
   const mockNavigate = jest.fn();
   const mockProcessGameStart = jest.fn();
   const mockLeaveGame = jest.fn();
-  const mockWatchGameDetails = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -42,6 +40,8 @@ describe("Lobby", () => {
 
     (useGameDetails as jest.Mock).mockReturnValue({
       gameID: "test-game-123",
+      gameState: "Waiting",
+      playerCount: 2,
     });
 
     (useParams as jest.Mock).mockReturnValue({ gameId: "test-game-123" });
@@ -58,11 +58,6 @@ describe("Lobby", () => {
 
     (useLoading as jest.Mock).mockReturnValue({
       isLoading: false,
-    });
-
-    mockWatchGameDetails.mockReturnValue(() => {});
-    (useFirestoreFunctions as jest.Mock).mockReturnValue({
-      watchGameDetails: mockWatchGameDetails,
     });
   });
 
@@ -94,8 +89,8 @@ describe("Lobby", () => {
     mockProcessGameStart.mockResolvedValueOnce([mockGame, []]);
 
     render(<Lobby />);
-
     const startButton = screen.getByText("Start Game");
+
     fireEvent.click(startButton);
 
     await screen.findByText("test-game-123");
@@ -118,36 +113,33 @@ describe("Lobby", () => {
   });
 
   test("should navigate to game when gameState changes to In progress", async () => {
-    mockWatchGameDetails.mockImplementation((gameId, callback) => {
-      setTimeout(() => {
-        callback({ gameState: "In Progress" });
-      }, 0);
-      return () => {};
-    });
 
     render(<Lobby />);
 
     await screen.findByText("test-game-123");
 
+    expect(mockNavigate).not.toHaveBeenCalledWith("/game/test-game-123");
+
+    // Update gameState
+    (useGameDetails as jest.Mock).mockReturnValue({
+      gameID: "test-game-123",
+      gameState: "In progress",
+      playerCount: 2,
+    });
+
+    render(<Lobby />);
+
     expect(mockNavigate).toHaveBeenCalledWith("/game/test-game-123");
   });
 
-  test("should setup game details watcher on mount", () => {
+  test("should not render start game button if player count is less than 2", () => {
+    (useGameDetails as jest.Mock).mockReturnValue({
+      gameID: "test-game-123",
+      gameState: "Waiting",
+      playerCount: 1,
+    });
+
     render(<Lobby />);
-
-    expect(mockWatchGameDetails).toHaveBeenCalledWith(
-      "test-game-123",
-      expect.any(Function),
-    );
-  });
-
-  test("should cleanup watchers on unmount", () => {
-    const mockUnsubscribe = jest.fn();
-    mockWatchGameDetails.mockReturnValue(mockUnsubscribe);
-
-    const { unmount } = render(<Lobby />);
-    unmount();
-
-    expect(mockUnsubscribe).toHaveBeenCalled();
+    expect(screen.queryByText("Start Game")).not.toBeInTheDocument();
   });
 });

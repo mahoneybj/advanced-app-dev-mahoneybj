@@ -14,7 +14,7 @@ const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
 }) => {
   const { gameId } = useParams<{ gameId: string }>();
   const { user } = useAuth();
-  const { gameID, setGameID } = useGameDetails();
+  const { setGameID } = useGameDetails();
   const { watchGameDetails, watchGameMembers } = useFirestoreFunctions();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,12 +22,27 @@ const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
     if (gameId && user) {
       setGameID(gameId);
 
+      let detailsLoaded = false;
+      let membersLoaded = false;
+
+      const checkIfReady = () => {
+        if (detailsLoaded && membersLoaded) {
+          // Add small delay to ensure data is fully synced
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 500);
+        }
+      };
+
       const unsubscribeDetails = watchGameDetails(gameId, () => {
-        // Set loading to false after first data fetch
-        setIsLoading(false);
+        detailsLoaded = true;
+        checkIfReady();
       });
 
-      const unsubscribeMembers = watchGameMembers(gameId, () => {});
+      const unsubscribeMembers = watchGameMembers(gameId, () => {
+        membersLoaded = true;
+        checkIfReady();
+      });
 
       return () => {
         unsubscribeDetails?.();
@@ -37,9 +52,7 @@ const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
   }, [gameId, user]);
 
   if (isLoading) {
-    return (
-        <SplashScreen />
-    );
+    return <SplashScreen />;
   }
 
   return <>{children}</>;

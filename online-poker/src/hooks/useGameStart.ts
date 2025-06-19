@@ -26,7 +26,6 @@ export const useGameStart = () => {
       await updateMembersDoc(gameId, Member.id, {
         cards: playerCards,
       });
-      setCards(playerCards);
     }
 
     // Update game data

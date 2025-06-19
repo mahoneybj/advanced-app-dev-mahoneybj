@@ -25,10 +25,6 @@ const CardsList = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Submitting selected cards:", selectedCards);
-  };
-
   return (
     <div className="cards-list">
       {cards.map((card, index) => (
@@ -43,10 +39,7 @@ const CardsList = () => {
       {turn && (
         <div className="game-btn">
           <button className="exchange-btn" onClick={handleCardExchange}>
-            Exchange Cards
-          </button>
-          <button className="submit-btn" onClick={handleSubmit}>
-            Submit
+            Exchange/Submit Cards
           </button>
         </div>
       )}

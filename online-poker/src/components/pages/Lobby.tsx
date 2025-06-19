@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import { useAuth } from "../../context/FirebaseAuthContext";
 import { useGameDetails } from "../../context/GameContext";
+import { useLoading } from "../../context/IsLoadingContext";
+
 
 const Lobby = () => {
   const { leaveGame } = useLeaveGame();
@@ -13,6 +15,7 @@ const Lobby = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { playerCount, gameState, gameID } = useGameDetails();
+  const { isLoading } = useLoading();
 
   const handleLeaveGame = async () => {
     if (gameId && user?.uid) {
@@ -39,7 +42,7 @@ const Lobby = () => {
   return (
     <div className="lobby-container">
       <div className="lobby-header">
-        <button className="Leave-game-btn" onClick={handleLeaveGame}>
+        <button className="Leave-game-btn" onClick={handleLeaveGame} disabled={isLoading}>
           Leave Game
         </button>
         <h1>Welcome to your poker lobby!</h1>
@@ -54,7 +57,7 @@ const Lobby = () => {
       </div>
       <div className="game-start">
         {playerCount > 1 ? (
-          <button className="Game-start-btn" onClick={handleGameStart}>
+          <button className="Game-start-btn" onClick={handleGameStart} disabled={isLoading}>
             Start Game
           </button>
         ) : (

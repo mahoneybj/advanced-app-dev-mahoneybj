@@ -76,8 +76,7 @@ describe("CardsList Component", () => {
   test("should show exchange and submit buttons when it's player's turn", () => {
     render(<CardsList />);
 
-    expect(screen.getByText("Exchange Cards")).toBeInTheDocument();
-    expect(screen.getByText("Submit")).toBeInTheDocument();
+    expect(screen.getByText("Exchange/Submit Cards")).toBeInTheDocument();
   });
 
   test("should not show buttons when it's not player's turn", () => {
@@ -139,7 +138,7 @@ describe("CardsList Component", () => {
     fireEvent.click(firstCard);
     fireEvent.click(secondCard);
 
-    const exchangeButton = screen.getByText("Exchange Cards");
+    const exchangeButton = screen.getByText("Exchange/Submit Cards");
     fireEvent.click(exchangeButton);
 
     expect(mockProcessGameTurnHandling).toHaveBeenCalledWith("test-game-123", [
@@ -151,7 +150,7 @@ describe("CardsList Component", () => {
   test("should call processGameTurnHandling with empty array when no cards selected", () => {
     render(<CardsList />);
 
-    const exchangeButton = screen.getByText("Exchange Cards");
+    const exchangeButton = screen.getByText("Exchange/Submit Cards");
     fireEvent.click(exchangeButton);
 
     expect(mockProcessGameTurnHandling).toHaveBeenCalledWith(
@@ -165,7 +164,7 @@ describe("CardsList Component", () => {
 
     render(<CardsList />);
 
-    const exchangeButton = screen.getByText("Exchange Cards");
+    const exchangeButton = screen.getByText("Exchange/Submit Cards");
     fireEvent.click(exchangeButton);
 
     expect(mockProcessGameTurnHandling).not.toHaveBeenCalled();
@@ -218,7 +217,7 @@ describe("CardsList Component", () => {
     });
 
     // Should exchange all cards
-    const exchangeButton = screen.getByText("Exchange Cards");
+    const exchangeButton = screen.getByText("Exchange/Submit Cards");
     fireEvent.click(exchangeButton);
 
     expect(mockProcessGameTurnHandling).toHaveBeenCalledWith(

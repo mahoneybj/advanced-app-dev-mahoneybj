@@ -236,6 +236,7 @@
 }
 
 .btn {
+  width: 100%; 
   padding: 12px 24px;
   font-size: 16px;
   font-weight: 500;
@@ -243,6 +244,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  box-sizing: border-box; 
 }
 
 .btn-primary {
@@ -274,11 +276,12 @@
 
 .join-actions input {
   width: 100%;
-  padding: 12px;
+  padding: 12px; 
   font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 4px;
   transition: border-color 0.2s;
+  box-sizing: border-box; 
 }
 
 .join-actions input:focus {

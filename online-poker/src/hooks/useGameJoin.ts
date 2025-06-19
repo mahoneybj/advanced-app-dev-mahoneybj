@@ -9,6 +9,7 @@ export const useGameJoin = () => {
   const { user } = useAuth();
   const gameAsync = useAsyncFunction<any>();
 
+  // Processes joining a game. Checks if game is still in the "Waiting" state.
   const processGameJoin = async (gameId: string) => {
     if (!user) {
       toast.error("You must be logged in to join a game");
@@ -32,11 +33,11 @@ export const useGameJoin = () => {
 
     await gameAsync.execute(
       async () => {
-        await setGameDoc(gameId, user.uid, memberFields);
+        await setGameDoc(gameId, user.uid, memberFields); // Add player to members subcollection
         const gameUpdate = {
           playerCount: increment(1),
         };
-        await updateGameDoc(gameId, gameUpdate);
+        await updateGameDoc(gameId, gameUpdate); // Increment player count in game document
       },
       {
         loadingMessage: "Joining game...",

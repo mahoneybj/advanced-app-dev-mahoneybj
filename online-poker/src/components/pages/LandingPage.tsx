@@ -15,6 +15,7 @@ const LandingPage = () => {
   const { isLoading } = useLoading();
   const [gameIDInput, setGameIDInput] = useState("");
 
+  // Calls processGameCreate hook to create a game and navigate to the lobby
   const handleCreateGame = async () => {
     if (!user) return;
     const result = await processGameCreate(user.uid);
@@ -24,6 +25,7 @@ const LandingPage = () => {
     }
   };
 
+  // Calls processGameJoin hook to join a game and navigate to the lobby
   const handleJoinGame = async () => {
     if (!user) return;
     const result = await processGameJoin(gameIDInput);
@@ -33,6 +35,7 @@ const LandingPage = () => {
     }
   };
 
+  // Stops players navigatiing backwards so they use leave game button in lobby which resets context and removes them from game document
   useEffect(() => {
     if (gameID) {
       navigate(`/lobby/${gameID}`);

@@ -11,7 +11,6 @@ const Login = () => {
     signInWithGoogle,
     loginWithEmail,
     registerWithEmail,
-    isLoading,
   } = useFirebaseAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -19,7 +18,7 @@ const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { setIsLoading } = useLoading();
+  const { isLoading } = useLoading();
 
   const handleAnonymousLogin = async () => {
     await signInAnonymous(username);
@@ -46,7 +45,6 @@ const Login = () => {
     } catch (error: any) {
       console.error("Email login/register failed:", error);
 
-      // Surely can handle this better?
       if (error.code === "auth/weak-password") {
         setError("Password must be at least 6 characters");
       } else if (error.code === "auth/email-already-in-use") {

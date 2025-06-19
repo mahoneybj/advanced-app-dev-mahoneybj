@@ -7,6 +7,7 @@ interface CardProps {
   onSelect: (card: string, isSelected: boolean) => void;
 }
 
+// Card component displays a playing card with an image and a checkbox for selection
 const Card = ({ card, isSelected, onSelect, turn }: CardProps) => {
   const { isLoading } = useLoading();
   const handleToggleSelection = () => {

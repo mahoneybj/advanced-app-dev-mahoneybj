@@ -13,6 +13,8 @@ const useWinnerHandling = () => {
   const { getMembers, updateGameDoc } = useFirestoreFunctions();
   const { setGameState } = useGameDetails();
 
+  // Determines the winner of the game based on the players hands using the calculateWinner util function
+  // Updates the game document with the winner's details and sets the game state to trigger game end in Game.tsx
   const determineWinner = async (gameId: string) => {
     try {
       const members = (await getMembers(gameId)) as GameMember[];

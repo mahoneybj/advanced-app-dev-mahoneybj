@@ -1,5 +1,6 @@
 import "../../App.css";
 
+// Simple splash screen for certain loading states such as loging in and creating a game
 const SplashScreen = () => {
   return (
     <div className={`SplashScreen`}>

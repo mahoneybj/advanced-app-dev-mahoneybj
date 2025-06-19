@@ -16,6 +16,7 @@ const Lobby = () => {
   const { playerCount, gameState, gameID } = useGameDetails();
   const { isLoading } = useLoading();
 
+  // leaveGame hook removes player from game document and resets game context
   const handleLeaveGame = async () => {
     if (gameId && user?.uid) {
       await leaveGame(gameId, user.uid);
@@ -23,6 +24,7 @@ const Lobby = () => {
     }
   };
 
+  // Calls processGameStart hook to update game document fields and navigate to game page
   const handleGameStart = async () => {
     if (gameId) {
       const result = await processGameStart(gameId);
@@ -32,6 +34,7 @@ const Lobby = () => {
     }
   };
 
+  // For users that didn't press start game will be redirected to game page when game state isn't "Waiting"
   useEffect(() => {
     if (gameID && gameState !== "Waiting") {
       navigate(`/game/${gameId}`);

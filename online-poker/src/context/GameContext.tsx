@@ -40,6 +40,7 @@ interface GameContextProps {
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
 
+// GameProvider component provides game context to the app
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [gameID, setGameID] = useState<string>("");
   const [gameState, setGameState] = useState<string>("waiting");

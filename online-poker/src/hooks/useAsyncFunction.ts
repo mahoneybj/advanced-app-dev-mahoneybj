@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useLoading } from "../context/IsLoadingContext";
 
+// Function to handle async operations with loading and error handling. Used in game handing hooks
 function useAsyncFunction<T>() {
   const { setIsLoading } = useLoading();
   const [error, setError] = useState<Error | null>(null);
@@ -42,7 +43,7 @@ function useAsyncFunction<T>() {
           setData(result);
           return result;
         } else {
-          // Normal online flow
+          // Normal online
           const result = await asyncFn();
           setData(result);
           toast.success(options.successMessage, { id: toastId });

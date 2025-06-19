@@ -10,6 +10,7 @@ export const useCreateGame = () => {
   const { setGameID } = useGameDetails();
   const gameAsync = useAsyncFunction<any>();
 
+  // Creates a new game document with initial game fields and shuffles a new deck of cards for future dealing
   const processGameCreate = async (ownerUID: string) => {
     const deck = deckShuffle();
     const gameFields = {

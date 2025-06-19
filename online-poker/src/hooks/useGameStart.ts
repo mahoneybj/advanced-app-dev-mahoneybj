@@ -7,14 +7,14 @@ export const useGameStart = () => {
     useFirestoreFunctions();
   const { setGameState } = useGameDetails();
 
+  // Processes the game start logic, dealing cards to players and updating game state
   const processGameStart = async (
     gameId: string,
   ): Promise<[GameData, Member[]]> => {
-    // Get game data and members
     const gameData = await getGameDetails(gameId);
     const members = await getMembers(gameId);
 
-    // Deck stuff
+    // Get deck index, if not set, default to 0
     let currentDeckIndex = gameData.deckIndex || 0;
     const deck = gameData.deck;
 

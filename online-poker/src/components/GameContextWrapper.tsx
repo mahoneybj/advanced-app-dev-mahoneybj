@@ -9,6 +9,8 @@ interface GameContextWrapperProps {
   children: ReactNode;
 }
 
+// GameContextWrapper wraps the game context and handles reloads to ensure the game details and members are loaded correctly
+// Having this wapper removes the need for the useGameDetails hook in every component that needs game details
 const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
   children,
 }) => {
@@ -25,7 +27,7 @@ const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
       let detailsLoaded = false;
       let membersLoaded = false;
 
-      // Avoid race conditions
+      // Possable issue caused by race condition but may have been in join game hook, keeping just in case
       const checkIfReady = () => {
         if (detailsLoaded && membersLoaded) {
           setTimeout(() => {

@@ -9,12 +9,13 @@ const Game = () => {
   const { gameState, gameEnded } = useGameDetails();
   const navigate = useNavigate();
 
+  // Navigates to winner page when game ends with a 5 second delay to allow players to see cards
   useEffect(() => {
     if (gameEnded) {
       toast("Calculating winner 🏅", { icon: "🧐" });
       const timer = setTimeout(() => {
         navigate(`/winner/${gameId}`);
-      }, 6000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }

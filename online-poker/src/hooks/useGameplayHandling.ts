@@ -12,6 +12,8 @@ export const useGameplayHandling = () => {
   const { cards, setCards, setTurn, setGameState } = useGameDetails();
   const { determineWinner } = useWinnerHandling();
 
+  // Processes the game turn handling logic, including updating the deck, player turns, and game state
+  // If all turns done then it calls useWinnerHandling hook to process winner
   const processGameTurnHandling = async (
     gameId: string,
     selectedCards: string[],
@@ -27,11 +29,11 @@ export const useGameplayHandling = () => {
 
     const gameData = await getGameDetails(gameId);
 
-    const remainingCards = cardRemove(cards, selectedCards);
+    const remainingCards = cardRemove(cards, selectedCards); // Removes selected cards from the current player's hand using cardRemove util function
 
-    const newCardsNeeded = selectedCards.length;
+    const newCardsNeeded = selectedCards.length; // Number of new cards to be drawn
 
-    const newCards = gameData.deck.slice(
+    const newCards = gameData.deck.slice( // Getting new cards by itterating from the deck using the deckIndex ensuring no duplicates
       gameData.deckIndex,
       gameData.deckIndex + newCardsNeeded,
     );
@@ -45,16 +47,18 @@ export const useGameplayHandling = () => {
     let nextPlayerName;
     let gameState;
 
-    if (nextTurnIndex >= gameData.playerCount) {
+    if (nextTurnIndex >= gameData.playerCount) { // If all players have taken their turn then calculate results
       nextPlayerId = "";
       nextPlayerName = "";
       gameState = "Calculating results";
       setGameState(`Calculating results`);
-
+      
+      // Update the current player's cards in the members subcollection
       await updateMembersDoc(gameId, user.uid, {
         cards: updatedCards,
       });
 
+      // Update the game document with the new deck index, current turn, and game state
       await updateGameDoc(gameId, {
         deckIndex: newDeckIndex,
         currentTurn: nextPlayerId,
@@ -73,10 +77,12 @@ export const useGameplayHandling = () => {
       setGameState(`${nextPlayerName}'s turn`);
     }
 
+    // Update the current player's cards in the members subcollection
     await updateMembersDoc(gameId, user.uid, {
       cards: updatedCards,
     });
 
+    // Update the game document with the new deck index, current turn, and game state
     await updateGameDoc(gameId, {
       deckIndex: newDeckIndex,
       currentTurn: nextPlayerId,

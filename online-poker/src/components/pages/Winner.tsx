@@ -9,12 +9,13 @@ const Winner: React.FC = () => {
     useGameDetails();
   const { isLoading } = useLoading();
 
+  // resetGame resets game context, navigates to landing page
   const handleReturnToHome = () => {
     resetGame();
     navigate("/");
   };
 
-  // Sort hands by rank
+  // Sort hands by rank to display winner card first
   const sortedHands = allHands
     ? [...allHands].sort((a, b) => {
         if (a.playerName === winnerName) return -1;
@@ -39,7 +40,7 @@ const Winner: React.FC = () => {
             {sortedHands.map((playerHand, index) => (
               <div
                 key={index}
-                className={`player-hand-card ${playerHand.playerName === winnerName ? "winner-hand" : "loser-hand"}`}
+                className={`player-hand-card ${playerHand.playerName === winnerName ? "winner-hand" : "loser-hand"}`} // CSS conditional class for winner and looser
               >
                 <div className="player-hand-header">
                   <h4>

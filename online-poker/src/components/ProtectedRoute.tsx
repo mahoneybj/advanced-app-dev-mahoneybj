@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
   children: React.ReactElement;
 }
 
-// Checks if the user is authenticated, if not, redirects to the login page
+// ProtectedRoute wapper checks if the user is authenticated, if not, redirects to the login page
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, isLoadingAuth } = useAuth();
 

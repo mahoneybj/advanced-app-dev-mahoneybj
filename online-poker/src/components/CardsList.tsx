@@ -12,8 +12,9 @@ const CardsList = () => {
   const { processGameTurnHandling } = useGameplayHandling();
   const { isLoading } = useLoading();
 
+  // Handles card selection and updates the selected cards state
+  // AI Generated
   const handleCardSelect = (card: string, isSelected: boolean) => {
-    // AI Generated, rewrite later to understand better
     if (isSelected) {
       setSelectedCards((prev) => [...prev, card]);
     } else {
@@ -21,6 +22,7 @@ const CardsList = () => {
     }
   };
 
+  // When player is ready, processGameTurnHandling is called with the gameId and selectedCards to be exchanged
   const handleCardExchange = () => {
     if (gameId) {
       processGameTurnHandling(gameId, selectedCards);

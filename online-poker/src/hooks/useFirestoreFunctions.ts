@@ -14,6 +14,8 @@ import { useAuth } from "../context/FirebaseAuthContext";
 import { useGameDetails } from "../context/GameContext";
 import toast from "react-hot-toast";
 
+// Hook with basic firestore functions such as adding, updating, deleting and getting documents
+// Also includes functions to watch game details and members, and to get game details
 export function useFirestoreFunctions() {
   const { user } = useAuth();
   const {
@@ -36,6 +38,10 @@ export function useFirestoreFunctions() {
 
   const setGameDoc = async (gameId: string, uid: string, gameData: any) => {
     await setDoc(doc(db, "games", gameId, "members", uid), gameData);
+  };
+  
+  const updateGameDoc = async (gameId: string, updates: any) => {
+    await updateDoc(doc(db, "games", gameId), updates);
   };
 
   const deleteMemberDoc = async (gameId: string, memberId: string) => {
@@ -68,10 +74,6 @@ export function useFirestoreFunctions() {
     };
   };
 
-  const updateGameDoc = async (gameId: string, updates: any) => {
-    await updateDoc(doc(db, "games", gameId), updates);
-  };
-
   const updateMembersDoc = async (
     gameId: string,
     memberId: string,
@@ -82,6 +84,8 @@ export function useFirestoreFunctions() {
     });
   };
 
+  // Function to watch game details and update state when changes occur
+  // GameContextWapper calls this function to update game state
   const watchGameDetails = (
     gameId: string,
     onUpdate: (gameDetails: any) => void,
@@ -114,6 +118,7 @@ export function useFirestoreFunctions() {
     return unsubscribe;
   };
 
+  // Function to watch game members and update cards context when changes occur
   const watchGameMembers = (
     gameId: string,
     onUpdate: (members: any[]) => void,
@@ -155,6 +160,7 @@ export function useFirestoreFunctions() {
     };
   };
 
+  // Function useful for other game hooks to get required game variables
   const getGameDetails = async (gameId: string) => {
     const gameDoc = await getDoc(doc(db, "games", gameId || gameID));
     if (!gameDoc.exists()) {

@@ -18,7 +18,7 @@ const Game = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [gameEnded, cards, turn, navigate]);
+  }, [gameEnded, navigate]);
 
   return (
     <div className="game">

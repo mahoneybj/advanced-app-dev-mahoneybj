@@ -31,6 +31,10 @@ const useWinnerHandling = () => {
       const winnerName = playerNames[winnerIndex];
       const winnerId = playerIds[winnerIndex];
 
+      // Add playerName field to each hand
+      for (let i = 0; i < allHands.length; i++) {
+        allHands[i].playerName = playerNames[allHands[i].playerIndex];
+      }
 
       await updateGameDoc(gameId, {
         gameState: `Game ended. ${winnerName} wins with ${winningSpecialHand}!`,

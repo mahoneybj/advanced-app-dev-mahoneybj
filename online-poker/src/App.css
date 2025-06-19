@@ -402,7 +402,7 @@
 
 /* Winner page styling */
 .winner-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: white;
@@ -435,6 +435,63 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
+}
+
+.winning-type {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.all-hands-section {
+  margin: 2rem 0;
+}
+
+.all-hands-section h3 {
+  font-size: 1.5rem;
+  color: #334;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.player-cards {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.player-hand-card {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease;
+}
+
+.player-hand-header h4 {
+  font-size: 1.1rem;
+  color: #334;
+  margin: 0.5rem;
+}
+
+.hand-type {
+  background-color: #334;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.result-card-image {
+  width: 150px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+  margin-top: 0.5rem;
 }
 
 .home-btn {

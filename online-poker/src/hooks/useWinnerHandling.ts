@@ -26,7 +26,8 @@ const useWinnerHandling = () => {
       );
       const playerIds = members.map((member: GameMember) => member.id);
 
-      const { winnerIndex, winningSpecialHand, allHands } = calculateWinner(playerCards);
+      const { winnerIndex, winningSpecialHand, allHands } =
+        calculateWinner(playerCards);
 
       const winnerName = playerNames[winnerIndex];
       const winnerId = playerIds[winnerIndex];
@@ -45,7 +46,9 @@ const useWinnerHandling = () => {
         gameEnded: true,
       });
 
-      setGameState(`Game ended. ${winnerName} wins with ${winningSpecialHand}!`);
+      setGameState(
+        `Game ended. ${winnerName} wins with ${winningSpecialHand}!`,
+      );
     } catch (error) {
       toast.error("Failed to determine the winner");
     }

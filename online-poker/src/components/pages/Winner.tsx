@@ -4,25 +4,70 @@ import { useGameDetails } from "../../context/GameContext";
 
 const Winner: React.FC = () => {
   const navigate = useNavigate();
-  const { winnerName, winnerSpecialHand, allHands, resetGame } = useGameDetails();
+  const { winnerName, winnerSpecialHand, allHands, resetGame } =
+    useGameDetails();
 
   const handleReturnToHome = () => {
     resetGame();
     navigate("/");
   };
 
+  // Sort hands by rank
+  const sortedHands = allHands
+    ? [...allHands].sort((a, b) => {
+        if (a.playerName === winnerName) return -1;
+        if (b.playerName === winnerName) return 1;
+        return 0;
+      })
+    : [];
 
   return (
     <div className="winner-container">
-      <h1 className="winner-title">Winner!</h1>
+      <h1 className="winner-title">Game Results</h1>
 
       <div className="winner-card">
         <h2>{winnerName || "Unknown Player"} Wins!</h2>
+        <p className="winning-type">with {winnerSpecialHand}</p>
       </div>
+
+      {sortedHands.length > 0 && (
+        <div className="all-hands-section">
+          <h3>All Players Hands</h3>
+          <div className="hands-grid">
+            {sortedHands.map((playerHand, index) => (
+              <div
+                key={index}
+                className={`player-hand-card ${playerHand.playerName === winnerName ? "winner-hand" : "loser-hand"}`}
+              >
+                <div className="player-hand-header">
+                  <h4>
+                    {playerHand.playerName === winnerName}
+                    {playerHand.playerName ||
+                      `Player ${playerHand.playerIndex + 1}`}
+                  </h4>
+                  <span className="hand-type">{playerHand.handType}</span>
+                </div>
+
+                <div className="player-cards">
+                  {playerHand.hand &&
+                    playerHand.hand.map((card, cardIndex) => (
+                      <img
+                        key={cardIndex}
+                        src={`/playing-cards/${card}.svg`}
+                        alt={`${card} card`}
+                        className="result-card-image"
+                      />
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="winner-actions">
         <button onClick={handleReturnToHome} className="home-btn">
-          Return to home
+          Return to Home
         </button>
       </div>
     </div>

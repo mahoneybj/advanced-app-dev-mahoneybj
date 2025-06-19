@@ -31,7 +31,7 @@ const Game = () => {
     if (gameEnded) {
       toast("Calculating winner 🏅", { icon: "🧐" });
       const timer = setTimeout(() => {
-        navigate(`/winner`); 
+        navigate(`/winner`);
       }, 6000);
 
       return () => clearTimeout(timer);

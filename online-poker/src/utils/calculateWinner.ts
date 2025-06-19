@@ -5,12 +5,24 @@
 export default function calculateWinner(playerCards: string[][]): {
   winnerIndex: number;
   winningSpecialHand: string;
-  allHands: { playerIndex: number; rank: number; handType: string, hand: string[], playerName?: string }[];
+  allHands: {
+    playerIndex: number;
+    rank: number;
+    handType: string;
+    hand: string[];
+    playerName?: string;
+  }[];
 } {
   let highestRank = -1;
   let winnerIndex = 0;
   let winningSpecialHand = "";
-  const allHands: { playerIndex: number; rank: number; handType: string, hand: string[], playerName?: string }[] = [];
+  const allHands: {
+    playerIndex: number;
+    rank: number;
+    handType: string;
+    hand: string[];
+    playerName?: string;
+  }[] = [];
 
   // Iterate through each hand to find the highest ranking hand
   for (let playerIndex = 0; playerIndex < playerCards.length; playerIndex++) {
@@ -22,7 +34,7 @@ export default function calculateWinner(playerCards: string[][]): {
       playerIndex,
       rank: currentHandRank[0],
       handType: currentHandRank[1],
-      hand: cards
+      hand: cards,
     });
 
     // Update winner if current hand has higher rank
@@ -44,19 +56,23 @@ export default function calculateWinner(playerCards: string[][]): {
 function evaluateHand(cards: string[]): [number, string] {
   const suits: string[] = [];
   const values: number[] = [];
-  
+
   // Splits cards into array of values and suits
   for (const card of cards) {
     let value = card.slice(0, -1); // First char (value)
-    const suit = card.slice(-1);   // Last char (suit)
+    const suit = card.slice(-1); // Last char (suit)
 
     suits.push(suit);
 
-    // Change str values into numbers 
-    if (value === "A") value = "14";      // Ace
-    else if (value === "K") value = "13"; // King
-    else if (value === "Q") value = "12"; // Queen
-    else if (value === "J") value = "11"; // Jack
+    // Change str values into numbers
+    if (value === "A")
+      value = "14"; // Ace
+    else if (value === "K")
+      value = "13"; // King
+    else if (value === "Q")
+      value = "12"; // Queen
+    else if (value === "J")
+      value = "11"; // Jack
     else if (value === "T") value = "10"; // Ten
 
     values.push(parseInt(value));
@@ -66,15 +82,15 @@ function evaluateHand(cards: string[]): [number, string] {
   values.sort((a, b) => b - a);
 
   // Check for each special hand
-  if (isRoyalFlush(suits, values)) return [9, 'Royal Flush'];
-  if (isStraightFlush(suits, values)) return [8, 'Straight Flush'];
-  if (isFourOfAKind(values)) return [7, 'Four of a Kind'];
-  if (isFullHouse(values)) return [6, 'Full House'];
-  if (isFlush(suits)) return [5, 'Flush'];
-  if (isStraight(values)) return [4, 'Straight'];
-  if (isThreeOfAKind(values)) return [3, 'Three of a Kind'];
-  if (isTwoPair(values)) return [2, 'Two Pair'];
-  if (isPair(values)) return [1, 'One Pair'];
+  if (isRoyalFlush(suits, values)) return [9, "Royal Flush"];
+  if (isStraightFlush(suits, values)) return [8, "Straight Flush"];
+  if (isFourOfAKind(values)) return [7, "Four of a Kind"];
+  if (isFullHouse(values)) return [6, "Full House"];
+  if (isFlush(suits)) return [5, "Flush"];
+  if (isStraight(values)) return [4, "Straight"];
+  if (isThreeOfAKind(values)) return [3, "Three of a Kind"];
+  if (isTwoPair(values)) return [2, "Two Pair"];
+  if (isPair(values)) return [1, "One Pair"];
 
   // If no special hand will get highest card
   return highCard(values);
@@ -157,5 +173,5 @@ function countOccurrences(arr: number[]): Record<number, number> {
 
 // Returns the highest card value in the hand divided by 15 to return value less than 1
 function highCard(values: number[]): [number, string] {
-  return [(values[0]/15), 'High Card']; // Array sorted for highest card first
+  return [values[0] / 15, "High Card"]; // Array sorted for highest card first
 }

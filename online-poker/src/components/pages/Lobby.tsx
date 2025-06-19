@@ -38,7 +38,6 @@ const Lobby = () => {
         if (gameDetails.gameState !== "Waiting") {
           navigate(`/game/${gameId}`);
         }
-
       });
       return () => unsub();
     }

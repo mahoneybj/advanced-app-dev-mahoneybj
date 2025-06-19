@@ -24,7 +24,7 @@ const Game = () => {
     <div className="game">
       <h1>Game</h1>
       <div className="Game-state">
-        <h3>Game state: {gameState}</h3>
+        <h3>{gameState}</h3>
       </div>
       <div className="Cards-Container">
         <CardsList />

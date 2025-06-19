@@ -41,7 +41,7 @@ describe("Game", () => {
     render(<Game />);
 
     expect(screen.getByText("Game")).toBeInTheDocument();
-    expect(screen.getByText("Game state: In Progress")).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
     expect(screen.getByTestId("cards-list")).toBeInTheDocument();
   });
 
@@ -55,7 +55,7 @@ describe("Game", () => {
 
     render(<Game />);
 
-    expect(screen.getByText("Game state: Player 2s turn")).toBeInTheDocument();
+    expect(screen.getByText("Player 2s turn")).toBeInTheDocument();
   });
 
   test("should navigate to winner page when game ends", async () => {

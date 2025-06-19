@@ -243,8 +243,8 @@ function getTwoPairRank(values: number[]): number {
     }
   }
   
-  // Return the higher pair value
-  return Math.max(...pairs) / 15;
+  // Return sum of both pair values divided by 15
+  return pairs[0] / 15 + pairs[1] / 15;
 }
 
 // Returns the pair value divided by 15

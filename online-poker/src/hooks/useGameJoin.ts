@@ -1,6 +1,5 @@
 import { useFirestoreFunctions } from "../hooks/useFirestoreFunctions";
 import { useAuth } from "../context/FirebaseAuthContext";
-import { useGameDetails } from "../context/GameContext";
 import { increment } from "firebase/firestore";
 import toast from "react-hot-toast";
 import useAsyncFunction from "./useAsyncFunction";
@@ -21,9 +20,6 @@ export const useGameJoin = () => {
     }
 
     const gameData = await getGameDetails(gameId);
-    if (!gameData) {
-      throw new Error("Game not found");
-    }
 
     if (gameData.gameState !== "Waiting") {
       toast.error("Game is already in progress");

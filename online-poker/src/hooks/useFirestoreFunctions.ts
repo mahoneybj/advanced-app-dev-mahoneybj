@@ -12,6 +12,7 @@ import {
 import { db } from "../firebase";
 import { useAuth } from "../context/FirebaseAuthContext";
 import { useGameDetails } from "../context/GameContext";
+import toast from "react-hot-toast";
 
 export function useFirestoreFunctions() {
   const { user } = useAuth();
@@ -157,6 +158,7 @@ export function useFirestoreFunctions() {
   const getGameDetails = async (gameId: string) => {
     const gameDoc = await getDoc(doc(db, "games", gameId || gameID));
     if (!gameDoc.exists()) {
+      toast.error("Game not found, check game ID and try again.");
       throw new Error("Game not found");
     }
     const gameData = gameDoc.data();

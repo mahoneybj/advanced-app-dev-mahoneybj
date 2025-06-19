@@ -41,7 +41,6 @@ const Winner: React.FC = () => {
               >
                 <div className="player-hand-header">
                   <h4>
-                    {playerHand.playerName === winnerName}
                     {playerHand.playerName ||
                       `Player ${playerHand.playerIndex + 1}`}
                   </h4>

@@ -34,7 +34,7 @@ const Winner: React.FC = () => {
 
       {sortedHands.length > 0 && (
         <div className="all-hands-section">
-          <h3>All Players Hands</h3>
+          <h3>All Player's Hand's</h3>
           <div className="hands-grid">
             {sortedHands.map((playerHand, index) => (
               <div

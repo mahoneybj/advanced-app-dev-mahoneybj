@@ -400,59 +400,118 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Winner page styling */
+/* Winner page styling - Clean & Modern */
 .winner-container {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 2rem;
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .winner-title {
   font-size: 2.5rem;
   color: #334;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
 }
 
 .winner-card {
-  background-color: #f9fafb;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #fff9c4 0%, #fff176 30%);
+  border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border-left: 4px solid #334;
+  border: none;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
 .winner-card h2 {
   font-size: 2rem;
-  color: #334;
-  margin: 0;
-}
-
-.winner-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
 }
 
 .winning-type {
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 500;
+  color: #4a4a4a;
   margin: 0;
 }
 
 .all-hands-section {
   margin: 2rem 0;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
 }
 
 .all-hands-section h3 {
   font-size: 1.5rem;
   color: #334;
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid #e5e7eb;
   padding-bottom: 0.5rem;
+}
+
+.hands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.player-hand-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.player-hand-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.winner-hand {
+  border-color: #ffd700;
+  background: linear-gradient(135deg, #fff9c4 0%, #fff176 30%);
+}
+
+.loser-hand {
+  border-color: #e5e7eb;
+  background: linear-gradient(135deg, #dbdbdb 0%, #bdbdbd 30%);
+
+}
+
+.player-hand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.player-hand-header h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334;
+  margin: 0;
+}
+
+.hand-type {
+  background-color: #334;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .player-cards {
@@ -460,62 +519,54 @@
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.player-hand-card {
-  background-color: #f9fafb;
-  border-radius: 8px;
-  padding: 1.5rem;
-  border: 2px solid transparent;
-  transition: transform 0.2s ease;
-}
-
-.player-hand-header h4 {
-  font-size: 1.1rem;
-  color: #334;
-  margin: 0.5rem;
-}
-
-.hand-type {
-  background-color: #334;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  padding-top: 0.5rem;
 }
 
 .result-card-image {
-  width: 150px;
+  width: 60px;
   height: auto;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease;
-  margin-top: 0.5rem;
+}
+
+.result-card-image:hover {
+  transform: translateY(-2px);
+}
+
+.winner-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .home-btn {
-  padding: 12px 24px;
+  padding: 12px 32px;
   font-size: 16px;
   font-weight: 500;
   background-color: #334;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .home-btn:hover {
   background-color: #445;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .home-btn:active {
-  transform: translateY(1px);
+  transform: translateY(0);
 }
 
-/* Responsive design for winner page */
+.home-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 @media (max-width: 768px) {
   .winner-container {
     margin: 1rem;
@@ -527,10 +578,20 @@
   }
 
   .winner-card h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
-  .winner-card {
-    padding: 1.5rem;
+  .hands-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .player-hand-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-card-image {
+    width: 50px;
   }
 }

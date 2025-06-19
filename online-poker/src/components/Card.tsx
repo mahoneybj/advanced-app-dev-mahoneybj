@@ -1,3 +1,5 @@
+import { useLoading } from "../context/IsLoadingContext";
+
 interface CardProps {
   card: string;
   isSelected: boolean;
@@ -6,6 +8,7 @@ interface CardProps {
 }
 
 const Card = ({ card, isSelected, onSelect, turn }: CardProps) => {
+  const { isLoading } = useLoading();
   const handleToggleSelection = () => {
     if (!turn) return;
     onSelect(card, !isSelected);
@@ -28,6 +31,7 @@ const Card = ({ card, isSelected, onSelect, turn }: CardProps) => {
               checked={isSelected}
               onChange={handleToggleSelection}
               id={`card-${card}`}
+              disabled={isLoading}
             />
           </div>
         )}

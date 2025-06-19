@@ -81,16 +81,48 @@ function evaluateHand(cards: string[]): [number, string] {
   // Sort values in desc for easier hand ranking
   values.sort((a, b) => b - a);
 
-  // Check for each special hand
-  if (isRoyalFlush(suits, values)) return [9, "Royal Flush"];
-  if (isStraightFlush(suits, values)) return [8, "Straight Flush"];
-  if (isFourOfAKind(values)) return [7, "Four of a Kind"];
-  if (isFullHouse(values)) return [6, "Full House"];
-  if (isFlush(suits)) return [5, "Flush"];
-  if (isStraight(values)) return [4, "Straight"];
-  if (isThreeOfAKind(values)) return [3, "Three of a Kind"];
-  if (isTwoPair(values)) return [2, "Two Pair"];
-  if (isPair(values)) return [1, "One Pair"];
+  // Check for each special hand with draw handling
+  if (isRoyalFlush(suits, values)) return [9, "Royal Flush"]; // Can't have a draw
+  
+  if (isStraightFlush(suits, values)) {
+    let rank = highCard(values)[0] + 8; // Adds highest card value for draw breaking
+    return [rank, "Straight Flush"];
+  }
+  
+  if (isFourOfAKind(values)) {
+    let rank = getFourOfAKindRank(values) + 7; // Adds highest four of a kind for dwaw breaking
+    return [rank, "Four of a Kind"];
+  }
+  
+  if (isFullHouse(values)) {
+    let rank = getFullHouseRank(values) + 6; // Adds highest three of a kind value for draw breaking
+    return [rank, "Full House"];
+  }
+  
+  if (isFlush(suits)) {
+    let rank = highCard(values)[0] + 5; // Adds highest card value for draw breaking
+    return [rank, "Flush"];
+  }
+  
+  if (isStraight(values)) {
+    let rank = highCard(values)[0] + 4; // Adds highest card value for draw breaking
+    return [rank, "Straight"];
+  }
+  
+  if (isThreeOfAKind(values)) {
+    let rank = getThreeOfAKindRank(values) + 3; // Adds three of a kind value for draw breaking
+    return [rank, "Three of a Kind"];
+  }
+  
+  if (isTwoPair(values)) {
+    let rank = getTwoPairRank(values) + 2; // Adds higher pair value for draw breaking
+    return [rank, "Two Pair"];
+  }
+  
+  if (isPair(values)) {
+    let rank = getPairRank(values) + 1; // Adds pair value for draw breaking
+    return [rank, "One Pair"];
+  }
 
   // If no special hand will get highest card
   return highCard(values);
@@ -175,3 +207,65 @@ function countOccurrences(arr: number[]): Record<number, number> {
 function highCard(values: number[]): [number, string] {
   return [values[0] / 15, "High Card"]; // Array sorted for highest card first
 }
+
+// Draw breaking functions that opperate like highCard but for special hand conditions
+
+// Returns the value of the four of a kind divided by 15
+function getFourOfAKindRank(values: number[]): number {
+  const valueCounts = countOccurrences(values);
+  for (const [value, count] of Object.entries(valueCounts)) {
+    if (count === 4) { // Find the four of a kind value
+      return parseInt(value) / 15;
+    }
+  }
+  return 0;
+}
+
+// Returns the value of the three-of-a-kind divided by 15
+function getFullHouseRank(values: number[]): number {
+  const valueCounts = countOccurrences(values);
+  for (const [value, count] of Object.entries(valueCounts)) {
+    if (count === 3) { // Find the three of a kind value
+      return parseInt(value) / 15;
+    }
+  }
+  return 0;
+}
+
+// Returns the value of the three-of-a-kind divided by 15
+function getThreeOfAKindRank(values: number[]): number {
+  const valueCounts = countOccurrences(values);
+  for (const [value, count] of Object.entries(valueCounts)) {
+    if (count === 3) {
+      return parseInt(value) / 15;
+    }
+  }
+  return 0;
+}
+
+// Returns the higher pair value divided by 15 for two pair
+function getTwoPairRank(values: number[]): number {
+  const valueCounts = countOccurrences(values);
+  const pairs: number[] = [];
+  
+  for (const [value, count] of Object.entries(valueCounts)) {
+    if (count === 2) {
+      pairs.push(parseInt(value));
+    }
+  }
+  
+  // Return the higher pair value
+  return Math.max(...pairs) / 15;
+}
+
+// Returns the pair value divided by 15
+function getPairRank(values: number[]): number {
+  const valueCounts = countOccurrences(values);
+  for (const [value, count] of Object.entries(valueCounts)) {
+    if (count === 2) {
+      return parseInt(value) / 15;
+    }
+  }
+  return 0;
+}
+

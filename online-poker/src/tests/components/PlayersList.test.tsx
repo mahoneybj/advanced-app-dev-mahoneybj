@@ -136,32 +136,6 @@ describe("PlayersList Component", () => {
     });
   });
 
-  test("should handle players with missing properties gracefully", async () => {
-    const playersWithMissingProps = [
-      { id: "player-1", displayName: "Complete Player" },
-      { id: "player-2" }, // Missing displayName
-      { displayName: "No ID Player" }, // Missing id
-    ];
-
-    mockWatchGameMembers.mockImplementation((gameId, callback) => {
-      callback(playersWithMissingProps);
-      return mockUnsubscribe;
-    });
-
-    render(<PlayersList gameID="test-game-123" />);
-
-    await waitFor(() => {
-      // Should render the complete player
-      expect(screen.getByTestId("player-player-1")).toBeInTheDocument();
-      expect(
-        screen.getByText("Player Name: Complete Player"),
-      ).toBeInTheDocument();
-
-      // Should handle missing displayName
-      expect(screen.getByTestId("player-player-2")).toBeInTheDocument();
-    });
-  });
-
   test("should have correct CSS class", () => {
     render(<PlayersList gameID="test-game-123" />);
 

@@ -40,7 +40,11 @@ const CardsList = () => {
       ))}
       {turn && (
         <div className="game-btn">
-          <button className="exchange-btn" onClick={handleCardExchange} disabled={isLoading}>
+          <button
+            className="exchange-btn"
+            onClick={handleCardExchange}
+            disabled={isLoading}
+          >
             Exchange/Submit Cards
           </button>
         </div>

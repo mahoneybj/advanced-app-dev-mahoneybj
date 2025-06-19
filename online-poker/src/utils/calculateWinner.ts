@@ -83,42 +83,42 @@ function evaluateHand(cards: string[]): [number, string] {
 
   // Check for each special hand with draw handling
   if (isRoyalFlush(suits, values)) return [9, "Royal Flush"]; // Can't have a draw
-  
+
   if (isStraightFlush(suits, values)) {
     let rank = highCard(values)[0] + 8; // Adds highest card value for draw breaking
     return [rank, "Straight Flush"];
   }
-  
+
   if (isFourOfAKind(values)) {
     let rank = getFourOfAKindRank(values) + 7; // Adds highest four of a kind for dwaw breaking
     return [rank, "Four of a Kind"];
   }
-  
+
   if (isFullHouse(values)) {
     let rank = getThreeOfAKindRank(values) + 6; // Adds highest three of a kind value as full houses 3 + 2 pair reuse getThreeOfAKindRank()
     return [rank, "Full House"];
   }
-  
+
   if (isFlush(suits)) {
     let rank = highCard(values)[0] + 5; // Adds highest card value for draw breaking
     return [rank, "Flush"];
   }
-  
+
   if (isStraight(values)) {
     let rank = highCard(values)[0] + 4; // Adds highest card value for draw breaking
     return [rank, "Straight"];
   }
-  
+
   if (isThreeOfAKind(values)) {
     let rank = getThreeOfAKindRank(values) + 3; // Adds three of a kind value for draw breaking
     return [rank, "Three of a Kind"];
   }
-  
+
   if (isTwoPair(values)) {
     let rank = getTwoPairRank(values) + 2; // Adds higher pair value for draw breaking
     return [rank, "Two Pair"];
   }
-  
+
   if (isPair(values)) {
     let rank = getPairRank(values) + 1; // Adds pair value for draw breaking
     return [rank, "One Pair"];
@@ -214,7 +214,8 @@ function highCard(values: number[]): [number, string] {
 function getFourOfAKindRank(values: number[]): number {
   const valueCounts = countOccurrences(values);
   for (const [value, count] of Object.entries(valueCounts)) {
-    if (count === 4) { // Find the four of a kind value
+    if (count === 4) {
+      // Find the four of a kind value
       return parseInt(value) / 15;
     }
   }
@@ -236,13 +237,13 @@ function getThreeOfAKindRank(values: number[]): number {
 function getTwoPairRank(values: number[]): number {
   const valueCounts = countOccurrences(values);
   const pairs: number[] = [];
-  
+
   for (const [value, count] of Object.entries(valueCounts)) {
     if (count === 2) {
       pairs.push(parseInt(value));
     }
   }
-  
+
   // Return sum of both pair values divided by 15
   return pairs[0] / 15 + pairs[1] / 15;
 }
@@ -257,4 +258,3 @@ function getPairRank(values: number[]): number {
   }
   return 0;
 }
-

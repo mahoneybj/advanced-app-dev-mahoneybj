@@ -54,9 +54,9 @@ describe("CardsList Component", () => {
     (useGameplayHandling as jest.Mock).mockReturnValue({
       processGameTurnHandling: mockProcessGameTurnHandling,
     });
-        (useLoading as jest.Mock).mockReturnValue({
-          isLoading: false,
-        });
+    (useLoading as jest.Mock).mockReturnValue({
+      isLoading: false,
+    });
   });
 
   test("should render all cards correctly", () => {

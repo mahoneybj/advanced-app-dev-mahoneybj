@@ -3,10 +3,10 @@ import { useNavigate } from "react-router";
 import { useGameDetails } from "../../context/GameContext";
 import { useLoading } from "../../context/IsLoadingContext";
 
-
 const Winner: React.FC = () => {
   const navigate = useNavigate();
-  const { winnerName, winnerSpecialHand, allHands, resetGame } = useGameDetails();
+  const { winnerName, winnerSpecialHand, allHands, resetGame } =
+    useGameDetails();
   const { isLoading } = useLoading();
 
   const handleReturnToHome = () => {
@@ -67,7 +67,11 @@ const Winner: React.FC = () => {
       )}
 
       <div className="winner-actions">
-        <button onClick={handleReturnToHome} className="home-btn" disabled={isLoading}>
+        <button
+          onClick={handleReturnToHome}
+          className="home-btn"
+          disabled={isLoading}
+        >
           Return to Home
         </button>
       </div>

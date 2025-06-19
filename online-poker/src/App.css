@@ -535,7 +535,6 @@
   }
 }
 
-
 /* Winner page styling */
 .winner-container {
   max-width: 1000px;
@@ -620,7 +619,6 @@
 .loser-hand {
   border-color: #e5e7eb;
   background: linear-gradient(135deg, #dbdbdb 0%, #bdbdbd 30%);
-
 }
 
 .player-hand-header {
@@ -702,4 +700,3 @@
   cursor: not-allowed;
   transform: none;
 }
-

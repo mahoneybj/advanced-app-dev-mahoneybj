@@ -14,7 +14,7 @@ jest.mock("../../context/IsLoadingContext");
 describe("Winner Page", () => {
   const mockNavigate = jest.fn();
   const mockResetGame = jest.fn();
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
@@ -28,8 +28,20 @@ describe("Winner Page", () => {
     winnerName: "Player 1",
     winnerSpecialHand: "Royal Flush",
     allHands: [
-      { playerName: "Player 1", rank: 9, handType: "Royal Flush", hand: ["AS", "KS", "QS", "JS", "TS"], playerIndex: 0 },
-      { playerName: "Player 2", rank: 3, handType: "Pair", hand: ["2H", "2D", "3C", "4S", "5H"], playerIndex: 1 },
+      {
+        playerName: "Player 1",
+        rank: 9,
+        handType: "Royal Flush",
+        hand: ["AS", "KS", "QS", "JS", "TS"],
+        playerIndex: 0,
+      },
+      {
+        playerName: "Player 2",
+        rank: 3,
+        handType: "Pair",
+        hand: ["2H", "2D", "3C", "4S", "5H"],
+        playerIndex: 1,
+      },
     ],
     resetGame: mockResetGame,
   };
@@ -56,7 +68,7 @@ describe("Winner Page", () => {
 
     test("should display all players' hands", () => {
       render(<Winner />);
-  
+
       expect(screen.getByText("All Player's Hand's")).toBeInTheDocument();
       expect(screen.getByText("Player 1")).toBeInTheDocument();
       expect(screen.getByText("Royal Flush")).toBeInTheDocument();
@@ -81,27 +93,44 @@ describe("Winner Page", () => {
         ...defaultMockData,
         winnerName: "Player 2",
         allHands: [
-          { playerName: "Player 1", rank: 3, handType: "Pair", hand: ["2H", "2D", "3C", "4S", "5H"], playerIndex: 0 },
-          { playerName: "Player 2", rank: 9, handType: "Royal Flush", hand: ["AS", "KS", "QS", "JS", "TS"], playerIndex: 1 },
-          { playerName: "Player 3", rank: 2, handType: "High Card", hand: ["7H", "9D", "JC", "KS", "AH"], playerIndex: 2 },
+          {
+            playerName: "Player 1",
+            rank: 3,
+            handType: "Pair",
+            hand: ["2H", "2D", "3C", "4S", "5H"],
+            playerIndex: 0,
+          },
+          {
+            playerName: "Player 2",
+            rank: 9,
+            handType: "Royal Flush",
+            hand: ["AS", "KS", "QS", "JS", "TS"],
+            playerIndex: 1,
+          },
+          {
+            playerName: "Player 3",
+            rank: 2,
+            handType: "High Card",
+            hand: ["7H", "9D", "JC", "KS", "AH"],
+            playerIndex: 2,
+          },
         ],
       });
 
       render(<Winner />);
 
-      const playerHandCards = document.querySelectorAll('.player-hand-card');
+      const playerHandCards = document.querySelectorAll(".player-hand-card");
 
-      
-      expect(playerHandCards[0]).toHaveClass('winner-hand');
-      expect(playerHandCards[1]).toHaveClass('loser-hand');
-      expect(playerHandCards[2]).toHaveClass('loser-hand');
+      expect(playerHandCards[0]).toHaveClass("winner-hand");
+      expect(playerHandCards[1]).toHaveClass("loser-hand");
+      expect(playerHandCards[2]).toHaveClass("loser-hand");
     });
 
     test("should have correct CSS classes to winner and losers", () => {
       render(<Winner />);
 
-      const winnerCard = document.querySelector('.winner-hand');
-      const loserCard = document.querySelector('.loser-hand');
+      const winnerCard = document.querySelector(".winner-hand");
+      const loserCard = document.querySelector(".loser-hand");
 
       expect(winnerCard).toBeInTheDocument();
       expect(loserCard).toBeInTheDocument();
@@ -122,10 +151,10 @@ describe("Winner Page", () => {
     test("should have correct CSS class for card images", () => {
       render(<Winner />);
 
-      const cardImages = document.querySelectorAll('.result-card-image');
+      const cardImages = document.querySelectorAll(".result-card-image");
       expect(cardImages.length).toBeGreaterThan(0);
-      cardImages.forEach(img => {
-        expect(img).toHaveClass('result-card-image');
+      cardImages.forEach((img) => {
+        expect(img).toHaveClass("result-card-image");
       });
     });
   });
@@ -171,10 +200,34 @@ describe("Winner Page", () => {
       (useGameDetails as jest.Mock).mockReturnValue({
         ...defaultMockData,
         allHands: [
-          { playerName: "Ben", rank: 9, handType: "Royal Flush", hand: ["AS", "KS", "QS", "JS", "TS"], playerIndex: 0 },
-          { playerName: "Katie", rank: 8, handType: "Straight Flush", hand: ["2H", "3H", "4H", "5H", "6H"], playerIndex: 1 },
-          { playerName: "Rosa", rank: 7, handType: "Four of a Kind", hand: ["7C", "7D", "7H", "7S", "8C"], playerIndex: 2 },
-          { playerName: "Caleb", rank: 1, handType: "High Card", hand: ["2D", "4C", "6S", "8H", "JC"], playerIndex: 3 },
+          {
+            playerName: "Ben",
+            rank: 9,
+            handType: "Royal Flush",
+            hand: ["AS", "KS", "QS", "JS", "TS"],
+            playerIndex: 0,
+          },
+          {
+            playerName: "Katie",
+            rank: 8,
+            handType: "Straight Flush",
+            hand: ["2H", "3H", "4H", "5H", "6H"],
+            playerIndex: 1,
+          },
+          {
+            playerName: "Rosa",
+            rank: 7,
+            handType: "Four of a Kind",
+            hand: ["7C", "7D", "7H", "7S", "8C"],
+            playerIndex: 2,
+          },
+          {
+            playerName: "Caleb",
+            rank: 1,
+            handType: "High Card",
+            hand: ["2D", "4C", "6S", "8H", "JC"],
+            playerIndex: 3,
+          },
         ],
         winnerName: "Ben",
       });

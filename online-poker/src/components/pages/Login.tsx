@@ -4,7 +4,6 @@ import { useFirebaseAuth } from "../../hooks/useFirebaseAuth";
 import { useNavigate } from "react-router";
 import { useLoading } from "../../context/IsLoadingContext";
 
-
 const Login = () => {
   const { user } = useAuth();
   const {

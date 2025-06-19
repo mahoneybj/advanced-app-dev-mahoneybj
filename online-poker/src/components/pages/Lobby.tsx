@@ -7,7 +7,6 @@ import { useAuth } from "../../context/FirebaseAuthContext";
 import { useGameDetails } from "../../context/GameContext";
 import { useLoading } from "../../context/IsLoadingContext";
 
-
 const Lobby = () => {
   const { leaveGame } = useLeaveGame();
   const { processGameStart } = useGameStart();
@@ -42,7 +41,11 @@ const Lobby = () => {
   return (
     <div className="lobby-container">
       <div className="lobby-header">
-        <button className="Leave-game-btn" onClick={handleLeaveGame} disabled={isLoading}>
+        <button
+          className="Leave-game-btn"
+          onClick={handleLeaveGame}
+          disabled={isLoading}
+        >
           Leave Game
         </button>
         <h1>Welcome to your poker lobby!</h1>
@@ -57,7 +60,11 @@ const Lobby = () => {
       </div>
       <div className="game-start">
         {playerCount > 1 ? (
-          <button className="Game-start-btn" onClick={handleGameStart} disabled={isLoading}>
+          <button
+            className="Game-start-btn"
+            onClick={handleGameStart}
+            disabled={isLoading}
+          >
             Start Game
           </button>
         ) : (

@@ -106,17 +106,148 @@ describe("calculateWinner", () => {
     });
   });
 
-  // tie handling tests
-  /*   describe('tie handling', () => {
-    test('compares equal hand types by highest card', () => {
+  // tie handling tests with each test have flipped array order to ensure first in array isnt default winner
+  describe("tie handling", () => {
+    test("compares equal hand types by highest card", () => {
       const playerCards = [
         ["AH", "AD", "4H", "4D", "QS"], // Two Pair: A,4
-        ["AH", "AS", "QH", "QD", "KS"]  // Two Pair: A,Q
+        ["AH", "AS", "QH", "QD", "KS"], // Two Pair: A,Q
       ];
-      
       expect(calculateWinner(playerCards).winnerIndex).toBe(1);
+
+      const playerCardsFlipped = [
+        ["AH", "AS", "QH", "QD", "KS"], // Two Pair: A,Q
+        ["AH", "AD", "4H", "4D", "QS"], // Two Pair: A,4
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(0);
     });
-  }); */
+
+    test("straight flush tie", () => {
+      const playerCards = [
+        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9 
+        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6 
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6 
+        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9 
+      ]
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("four of a kind tie", () => {
+      const playerCards = [
+        ["9H", "9D", "9S", "9C", "5H"], // Four 9
+        ["7H", "7D", "7S", "7C", "AH"], // Four 7
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["7H", "7D", "7S", "7C", "AH"], // Four 7
+        ["9H", "9D", "9S", "9C", "5H"], // Four 9
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("full house tie", () => {
+      const playerCards = [
+        ["KH", "KD", "KS", "5C", "5H"], // Kings
+        ["QH", "QD", "QS", "AC", "AH"], // Queens
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["QH", "QD", "QS", "AC", "AH"], // Queens
+        ["KH", "KD", "KS", "5C", "5H"], // Kings
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("flush tie - higher card wins", () => {
+      const playerCards = [
+        ["AH", "KH", "QH", "JH", "9H"], // Ace high flush
+        ["KS", "QS", "JS", "TS", "8S"], // King high flush
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["KS", "QS", "JS", "TS", "8S"], // King high flush
+        ["AH", "KH", "QH", "JH", "9H"], // Ace high flush
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("straight tie", () => {
+      const playerCards = [
+        ["AS", "KC", "QD", "JH", "TS"], // Ace straight
+        ["9S", "8C", "7D", "6H", "5S"], // 9 straight
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["9S", "8C", "7D", "6H", "5S"], // 9 straight
+        ["AS", "KC", "QD", "JH", "TS"], // Ace straight
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("three of a kind tie", () => {
+      const playerCards = [
+        ["KH", "KD", "KS", "5C", "3H"], // 3 kings
+        ["QH", "QD", "QS", "AC", "JH"], // 3 queens
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["QH", "QD", "QS", "AC", "JH"], // 3 queens
+        ["KH", "KD", "KS", "5C", "3H"], // 3 kings
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("two pair tie", () => {
+      const playerCards = [
+        ["KH", "KD", "QS", "QC", "JH"], // Kings and queens
+        ["JH", "JD", "TS", "TC", "9H"], // Jacks and tens
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["JH", "JD", "TS", "TC", "9H"], // Jacks and tens
+        ["KH", "KD", "QS", "QC", "JH"], // Kings and queens
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("one pair tie", () => {
+      const playerCards = [
+        ["AH", "AD", "KC", "QS", "JH"], // Pair of aces
+        ["KH", "KD", "QC", "JS", "TH"], // Pair of kings
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["KH", "KD", "QC", "JS", "TH"], // Pair of kings
+        ["AH", "AD", "KC", "QS", "JH"], // Pair of aces
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+
+    test("high card tie", () => {
+      const playerCards = [
+        ["AH", "KD", "QC", "JS", "9H"], // Ace
+        ["KH", "QD", "JC", "TS", "8H"], // King
+      ];
+      expect(calculateWinner(playerCards).winnerIndex).toBe(0);
+
+      const playerCardsFlipped = [
+        ["KH", "QD", "JC", "TS", "8H"], // King
+        ["AH", "KD", "QC", "JS", "9H"], // Ace
+      ];
+      expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
+    });
+  });
 
   describe("edge cases", () => {
     test("handles many players", () => {

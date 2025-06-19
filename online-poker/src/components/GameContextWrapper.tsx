@@ -25,9 +25,9 @@ const GameContextWrapper: React.FC<GameContextWrapperProps> = ({
       let detailsLoaded = false;
       let membersLoaded = false;
 
+      // Avoid race conditions
       const checkIfReady = () => {
         if (detailsLoaded && membersLoaded) {
-          // Add small delay to ensure data is fully synced
           setTimeout(() => {
             setIsLoading(false);
           }, 500);

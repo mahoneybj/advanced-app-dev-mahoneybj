@@ -55,7 +55,7 @@ const LandingPage = () => {
           </p>
         </div>
         <div className="landing-actions">
-          <button className="btn btn-primary" onClick={handleCreateGame}>
+          <button className="btn btn-primary" onClick={handleCreateGame} disabled={isLoading}>
             Create Game
           </button>
           <div className="join-actions">
@@ -66,7 +66,7 @@ const LandingPage = () => {
               onChange={(e) => setGameIDInput(e.target.value)}
               disabled={isLoading}
             />
-            <button className="btn btn-secondary" onClick={handleJoinGame}>
+            <button className="btn btn-secondary" onClick={handleJoinGame} disabled={isLoading}>
               Join Game
             </button>
           </div>

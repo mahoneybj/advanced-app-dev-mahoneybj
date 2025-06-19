@@ -1,5 +1,4 @@
 import PlayerList from "../PlayersList";
-import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
 import { useGameStart } from "../../hooks/useGameStart";
 import { useLeaveGame } from "../../hooks/useLeaveGame";
 import { useNavigate, useParams } from "react-router";
@@ -8,7 +7,6 @@ import { useAuth } from "../../context/FirebaseAuthContext";
 import { useGameDetails } from "../../context/GameContext";
 
 const Lobby = () => {
-  const { watchGameDetails } = useFirestoreFunctions();
   const { leaveGame } = useLeaveGame();
   const { processGameStart } = useGameStart();
   const { gameId } = useParams();
@@ -31,17 +29,6 @@ const Lobby = () => {
       }
     }
   };
-
-  /*   useEffect(() => {
-    if (gameId) {
-      const unsub = watchGameDetails(gameId, async (gameDetails) => {
-        if (gameDetails.gameState !== "Waiting") {
-          navigate(`/game/${gameId}`);
-        }
-      });
-      return () => unsub();
-    }
-  }, [navigate]); */
 
   useEffect(() => {
     if (gameID && gameState !== "Waiting") {

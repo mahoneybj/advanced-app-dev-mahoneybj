@@ -1,31 +1,13 @@
-import { useFirestoreFunctions } from "../../hooks/useFirestoreFunctions";
 import { useGameDetails } from "../../context/GameContext";
-import { useAuth } from "../../context/FirebaseAuthContext";
 import { useParams, useNavigate } from "react-router";
 import { useEffect } from "react";
 import CardsList from "../CardsList";
 import toast from "react-hot-toast";
 
 const Game = () => {
-  const { watchGameDetails, watchGameMembers } = useFirestoreFunctions();
   const { gameId } = useParams<{ gameId: string }>();
-  const { gameState, gameEnded } = useGameDetails();
+  const { gameState, gameEnded, cards, turn } = useGameDetails();
   const navigate = useNavigate();
-  const { user } = useAuth();
-
-  /*   useEffect(() => {
-    if (gameId && user) {
-      const unsubscribe = watchGameMembers(gameId, () => {});
-      const unsubscribeGameState = watchGameDetails(gameId, () => {});
-      const unsubscribeGameTurn = watchGameDetails(gameId, () => {});
-
-      return () => {
-        if (unsubscribe) unsubscribe();
-        if (unsubscribeGameState) unsubscribeGameState();
-        if (unsubscribeGameTurn) unsubscribeGameTurn();
-      };
-    }
-  }, []); */
 
   useEffect(() => {
     if (gameEnded) {
@@ -36,7 +18,7 @@ const Game = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [gameEnded, navigate]);
+  }, [gameEnded, cards, turn, navigate]);
 
   return (
     <div className="game">

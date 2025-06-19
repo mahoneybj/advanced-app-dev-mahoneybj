@@ -95,7 +95,7 @@ function evaluateHand(cards: string[]): [number, string] {
   }
   
   if (isFullHouse(values)) {
-    let rank = getFullHouseRank(values) + 6; // Adds highest three of a kind value for draw breaking
+    let rank = getThreeOfAKindRank(values) + 6; // Adds highest three of a kind value as full houses 3 + 2 pair reuse getThreeOfAKindRank()
     return [rank, "Full House"];
   }
   
@@ -221,18 +221,7 @@ function getFourOfAKindRank(values: number[]): number {
   return 0;
 }
 
-// Returns the value of the three-of-a-kind divided by 15
-function getFullHouseRank(values: number[]): number {
-  const valueCounts = countOccurrences(values);
-  for (const [value, count] of Object.entries(valueCounts)) {
-    if (count === 3) { // Find the three of a kind value
-      return parseInt(value) / 15;
-    }
-  }
-  return 0;
-}
-
-// Returns the value of the three-of-a-kind divided by 15
+// Returns the value of the three of a kind divided by 15
 function getThreeOfAKindRank(values: number[]): number {
   const valueCounts = countOccurrences(values);
   for (const [value, count] of Object.entries(valueCounts)) {

@@ -95,6 +95,7 @@ export function useFirestoreFunctions() {
           setGameID(docSnapshot.id);
           setPlayerCount(data.playerCount || 0);
           
+
           if (user) {
             setTurn(data.currentTurn === user.uid);
           }

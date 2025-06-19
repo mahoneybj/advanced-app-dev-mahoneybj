@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 const Game = () => {
   const { gameId } = useParams<{ gameId: string }>();
-  const { gameState, gameEnded, cards, turn } = useGameDetails();
+  const { gameState, gameEnded } = useGameDetails();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -5,9 +5,7 @@ describe("deckShuffle", () => {
     const deck = deckShuffle();
     expect(deck).toHaveLength(52);
     expect(deck).toEqual(
-      expect.arrayContaining([
-        expect.stringMatching(/^[2-9TJQKA][CDHS]$/),
-      ]),
+      expect.arrayContaining([expect.stringMatching(/^[2-9TJQKA][CDHS]$/)]),
     );
   });
 

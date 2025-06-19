@@ -113,7 +113,6 @@ describe("Lobby", () => {
   });
 
   test("should navigate to game when gameState changes to In progress", async () => {
-
     render(<Lobby />);
 
     await screen.findByText("test-game-123");

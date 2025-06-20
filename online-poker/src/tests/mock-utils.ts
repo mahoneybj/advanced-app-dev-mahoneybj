@@ -17,4 +17,3 @@ export const createMockPlayer = (overrides = {}) => ({
   displayName: "Player 1",
   ...overrides,
 });
-

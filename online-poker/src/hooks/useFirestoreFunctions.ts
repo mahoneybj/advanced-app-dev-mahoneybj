@@ -39,7 +39,7 @@ export function useFirestoreFunctions() {
   const setGameDoc = async (gameId: string, uid: string, gameData: any) => {
     await setDoc(doc(db, "games", gameId, "members", uid), gameData);
   };
-  
+
   const updateGameDoc = async (gameId: string, updates: any) => {
     await updateDoc(doc(db, "games", gameId), updates);
   };

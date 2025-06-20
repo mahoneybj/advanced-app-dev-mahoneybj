@@ -124,15 +124,15 @@ describe("calculateWinner", () => {
 
     test("straight flush tie", () => {
       const playerCards = [
-        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9 
-        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6 
+        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9
+        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6
       ];
       expect(calculateWinner(playerCards).winnerIndex).toBe(0);
 
       const playerCardsFlipped = [
-        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6 
-        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9 
-      ]
+        ["6S", "5S", "4S", "3S", "2S"], // Straight flush 6
+        ["9H", "8H", "7H", "6H", "5H"], // Straight flush 9
+      ];
       expect(calculateWinner(playerCardsFlipped).winnerIndex).toBe(1);
     });
 

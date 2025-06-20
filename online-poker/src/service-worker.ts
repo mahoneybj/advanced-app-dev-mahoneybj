@@ -58,8 +58,8 @@ registerRoute(
   // Cache SVG files from the playing-cards directory
   ({ url }) =>
     url.origin === self.location.origin &&
-    url.pathname.includes('/playing-cards/') &&
-    url.pathname.endsWith('.svg'),
+    url.pathname.includes("/playing-cards/") &&
+    url.pathname.endsWith(".svg"),
   // Use CacheFirst strategy for card images since they don't change
   new CacheFirst({
     cacheName: "card-images",

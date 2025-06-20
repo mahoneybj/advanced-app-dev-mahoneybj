@@ -33,7 +33,8 @@ export const useGameplayHandling = () => {
 
     const newCardsNeeded = selectedCards.length; // Number of new cards to be drawn
 
-    const newCards = gameData.deck.slice( // Getting new cards by itterating from the deck using the deckIndex ensuring no duplicates
+    const newCards = gameData.deck.slice(
+      // Getting new cards by itterating from the deck using the deckIndex ensuring no duplicates
       gameData.deckIndex,
       gameData.deckIndex + newCardsNeeded,
     );
@@ -47,12 +48,13 @@ export const useGameplayHandling = () => {
     let nextPlayerName;
     let gameState;
 
-    if (nextTurnIndex >= gameData.playerCount) { // If all players have taken their turn then calculate results
+    if (nextTurnIndex >= gameData.playerCount) {
+      // If all players have taken their turn then calculate results
       nextPlayerId = "";
       nextPlayerName = "";
       gameState = "Calculating results";
       setGameState(`Calculating results`);
-      
+
       // Update the current player's cards in the members subcollection
       await updateMembersDoc(gameId, user.uid, {
         cards: updatedCards,

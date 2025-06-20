@@ -1,1 +1,1 @@
-[Deployed game](online-poker-b9091.web.app)
+[Deployed game](https://online-poker-b9091.web.app/login)

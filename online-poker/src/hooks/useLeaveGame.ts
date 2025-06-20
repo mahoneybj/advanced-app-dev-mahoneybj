@@ -10,7 +10,6 @@ export function useLeaveGame() {
 
   // Removes player from member subcollection and decrements player count in game document
   const leaveGame = async (gameId: string, uid: string) => {
-    await deleteMemberDoc(gameId, uid);
     const gameUpdates = {
       playerCount: increment(-1),
     };
@@ -25,6 +24,8 @@ export function useLeaveGame() {
         errorMessage: "Failed to leave game",
       },
     );
+    await deleteMemberDoc(gameId, uid);
+
     setGameID(""); // Clear the game ID in the context
   };
 
